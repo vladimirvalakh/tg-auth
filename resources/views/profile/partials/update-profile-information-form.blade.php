@@ -13,53 +13,23 @@
         @csrf
         @method('patch')
 
-        <div>
+        <div class="form-group">
             <x-input-label for="name" value="Имя" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-text-input id="name" name="name" type="text" class="form-control mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
-        <div>
+        @if ($user->role)
+        <div class="form-group">
             <x-input-label for="role" value="Роль" />
-
-            <div class="form-group">
-                <select name="role_id" class="form-control" id="role_id" disabled>
-                    @foreach($roles as $key => $role)
-                        <option value="{{ $key }}"  {{ ($key == $user->role->id) ? 'selected': '' }}>
-                            {{ $role }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+            <x-text-input id="role" name="role" type="text" disabled class="form-control mt-1 block w-full" :value="old('role', $user->role->name)" />
         </div>
+        @endif
 
 
-{{--        <div>--}}
-{{--            <x-input-label for="email" :value="__('Email')" />--}}
-{{--            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" autocomplete="username" />--}}
-{{--            <x-input-error class="mt-2" :messages="$errors->get('email')" />--}}
 
-{{--            @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())--}}
-{{--                <div>--}}
-{{--                    <p class="text-sm mt-2 text-gray-800">--}}
-{{--                        {{ __('Your email address is unverified.') }}--}}
-
-{{--                        <button form="send-verification" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">--}}
-{{--                            {{ __('Click here to re-send the verification email.') }}--}}
-{{--                        </button>--}}
-{{--                    </p>--}}
-
-{{--                    @if (session('status') === 'verification-link-sent')--}}
-{{--                        <p class="mt-2 font-medium text-sm text-green-600">--}}
-{{--                            {{ __('A new verification link has been sent to your email address.') }}--}}
-{{--                        </p>--}}
-{{--                    @endif--}}
-{{--                </div>--}}
-{{--            @endif--}}
-{{--        </div>--}}
-
-        <div class="flex items-center gap-4">
-            <x-primary-button>Сохранить</x-primary-button>
+        <div class="form-group flex items-center gap-4">
+            <button class="btn btn-md btn-primary" type="submit">Сохранить</button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -67,7 +37,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
+                    class="text-sm text-gray-600 float-right text-success"
                 >Сохранено</p>
             @endif
         </div>

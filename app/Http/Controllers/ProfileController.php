@@ -46,11 +46,23 @@ class ProfileController extends Controller
 
                 Auth::loginUsingId($user->id);
 
-                return redirect()->route('dashboard');
+                return redirect()->route('sites');
             } catch (Exception $e) {
                 die ($e->getMessage());
             }
         }
+    }
+
+    /**
+     * Update the user's profile information.
+     */
+    public function roleUpdate(Request $request): RedirectResponse
+    {
+        $user = User::findOrFail(Auth::id());
+        $user->role_id = $request->get('role_id');
+        $user->save();
+
+        return Redirect::route('sites')->with('status', 'role-updated');
     }
 
     /**

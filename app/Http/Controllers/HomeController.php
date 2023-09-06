@@ -4,21 +4,38 @@ namespace App\Http\Controllers;
 
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use App\Models\Site;
+use App\Models\Category;
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Foundation\Auth;
 use Illuminate\Support\Facades\DB;
 
 use Itstructure\GridView\Filters\DropdownFilter;
+use Itstructure\GridView\Formatters\UrlFormatter;
 
 class HomeController extends Controller
 {
-    public function list()
+
+    public function callAction($method, $parameters)
+    {
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role', [
+                'user' => auth()->user(),
+                'roles' => DB::table('roles')->pluck('name', 'id')->toArray(),
+            ]);
+        }
+
+        return parent::callAction($method, $parameters);
+    }
+
+
+    public function sites()
     {
 
         $currentRole = auth()->user()->role;
 
-        if (!$currentRole) {
-            return view('set_role');
-        }
 
         if ($currentRole->slug === 'moderator') {
             return view('moderator_dashboard');
@@ -36,7 +53,7 @@ class HomeController extends Controller
             ],
             'rowsPerPage' => 100,
             'use_filters' => true,
-            'useSendButtonAnyway' => true,
+            'useSendButtonAnyway' => false,
             'searchButtonLabel' => 'Поиск',
             'resetButtonLabel' => 'Сброс',
 
@@ -44,6 +61,10 @@ class HomeController extends Controller
                 [
                     'attribute' => 'url',
                     'label' => 'Сайт',
+                    'format' => 'html',
+                    'value' => function ($row) {
+                        return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
+                    },
                 ],
                 [
                     'attribute' => 'cat_id',
@@ -104,6 +125,164 @@ class HomeController extends Controller
             'gridData' => $gridData
         ]);
     }
+
+    public function categories()
+    {
+
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role');
+        }
+
+        if ($currentRole->slug === 'moderator') {
+            return view('moderator_dashboard');
+        }
+
+
+        $dataProvider = new EloquentDataProvider(Category::query());
+
+        $gridData = [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'url',
+                    'label' => 'Сайт',
+                    'format' => 'html',
+                    'value' => function ($row) {
+                        return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
+                    },
+                ],
+                [
+                    'attribute' => 'city',
+                    'label' => 'Город',
+                ],
+                [
+                    'attribute' => 'city2',
+                    'label' => 'Город локатив',
+                ],
+            ],
+        ];
+
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData
+        ]);
+    }
+
+    public function users()
+    {
+
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role');
+        }
+
+        if ($currentRole->slug === 'moderator') {
+            return view('moderator_dashboard');
+        }
+
+
+        $dataProvider = new EloquentDataProvider(User::query());
+
+        $gridData = [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'name',
+                    'label' => 'Имя',
+                    'htmlAttributes' => [
+                        'width' => '30%'
+                    ]
+                ],
+                [
+                    'attribute' => 'role_id',
+                    'label' => 'Роль',
+                    'value' => function ($row) {
+                        return $row->role->name;
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'role_id', // REQUIRED if 'attribute' is not defined for column.
+                        'data' => DB::table('roles')->pluck('name', 'id')->toArray()
+                    ],
+                    'htmlAttributes' => [
+                        'width' => '15%'
+                    ]
+                ],
+            ],
+        ];
+
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData
+        ]);
+    }
+
+    public function roles()
+    {
+
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role');
+        }
+
+        if ($currentRole->slug === 'moderator') {
+            return view('moderator_dashboard');
+        }
+
+
+        $dataProvider = new EloquentDataProvider(Role::query());
+
+        $gridData = [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'name',
+                    'label' => 'Роль',
+                ],
+            ],
+        ];
+
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData
+        ]);
+    }
+
+
 
 //    /**
 //     * Display the user's profile form.

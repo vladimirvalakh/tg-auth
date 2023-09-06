@@ -15,14 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
 Route::get('/auth/telegram', [ProfileController::class, 'telegram'])->name('auth.telegram');
 
 
-Route::get('/dashboard', [HomeController::class, 'list'])->name('dashboard')->middleware(['auth', 'verified']);
+Route::get('/', [HomeController::class, 'list'])->name('dashboard')->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

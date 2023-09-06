@@ -4,23 +4,27 @@ namespace App\Http\Controllers;
 
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use App\Models\Site;
+use Illuminate\Foundation\Auth;
 use Illuminate\Support\Facades\DB;
 
-
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Foundation\Auth\User;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
-use Exception;
 use Itstructure\GridView\Filters\DropdownFilter;
 
 class HomeController extends Controller
 {
     public function list()
     {
+
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role');
+        }
+
+        if ($currentRole->slug === 'moderator') {
+            return view('moderator_dashboard');
+        }
+
+
         $dataProvider = new EloquentDataProvider(Site::query());
 
         $categories = DB::table('categories')->pluck('name', 'id')->toArray();
@@ -66,7 +70,7 @@ class HomeController extends Controller
                 ],
                 [
                     'attribute' => 'prf',
-                    'label' => 'Назначен',
+                    'label' => 'Партнёр',
                 ],
 
 //                [
@@ -93,6 +97,7 @@ class HomeController extends Controller
 //                ],
             ],
         ];
+
 
         return view('dashboard', [
             'dataProvider' => $dataProvider,

@@ -26,6 +26,7 @@ Route::get('/roles', [HomeController::class, 'roles'])->name('roles')->middlewar
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/delete', [ProfileController::class, 'delete'])->name('profile.delete');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('role/update', [ProfileController::class, 'roleUpdate'])->name('role.update');

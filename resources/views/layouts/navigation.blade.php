@@ -30,6 +30,8 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{route('profile.edit')}}">Профиль</a>
                     <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{route('profile.delete')}}">Настройки аккаунта</a>
+                    <div class="dropdown-divider"></div>
                     <form method="POST" action="{{route('logout')}}">
                         @csrf
                         <a class="dropdown-item" href="{{route('logout')}}" onclick="event.preventDefault();

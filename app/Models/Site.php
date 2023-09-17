@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Models
  * @property int $id
  * @property string $url
- * @property string $city
+ * @property integer $city_id
  */
 class Site extends Model
 {
@@ -21,11 +21,16 @@ class Site extends Model
      */
     protected $fillable = [
         'url',
-        'city',
+        'city_id',
     ];
 
     public function category()
     {
         return $this->belongsTo('App\Models\Category', 'cat_id');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo('App\Models\City', 'city_id');
     }
 }

@@ -40,7 +40,13 @@ class ProfileController extends Controller
                     $user = new \App\Models\User();
                     $user->telegram_id = $auth_data['id'];
                     $user->username = $auth_data['username'];
-                    $user->name = $auth_data['first_name'] . ' ' . $auth_data['last_name'];
+                    if ($auth_data['first_name']) {
+                        $user->name = $auth_data['first_name'];
+                    } else {
+                        $user->name = $auth_data['username'];
+                    }
+
+                   // $user->name = $auth_data['first_name'] . ' ' . $auth_data['last_name'];
                     $user->save();
                 }
 

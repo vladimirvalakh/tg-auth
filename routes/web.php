@@ -25,6 +25,10 @@ Route::get('/roles', [HomeController::class, 'roles'])->name('roles')->middlewar
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/site/{site}/view', [HomeController::class, 'siteView'])->name('site.view');
+    Route::get('/site/{site}/edit', [HomeController::class, 'siteEdit'])->name('site.edit');
+    Route::get('/site/{site}/destroy', [HomeController::class, 'siteDestroy'])->name('site.destroy');
+    Route::patch('/site/{site}/update', [HomeController::class, 'siteUpdate'])->name('site.update');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/delete', [ProfileController::class, 'delete'])->name('profile.delete');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

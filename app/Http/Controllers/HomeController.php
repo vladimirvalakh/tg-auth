@@ -2,8 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use http\Env\Request;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
+use Itstructure\GridView\Actions\Delete;
+use Itstructure\GridView\Columns\ActionColumn;
+use Itstructure\GridView\Columns\CheckboxColumn;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use App\Models\Site;
+use App\Models\City;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Role;
@@ -30,10 +37,41 @@ class HomeController extends Controller
         return parent::callAction($method, $parameters);
     }
 
+    public function siteView(Site $site)
+    {
+        return view('site/view', [
+            'site' => $site
+        ]);
+    }
+
+    public function siteEdit(Site $site)
+    {
+        $categories = DB::table('categories')->pluck('name', 'id')->toArray();
+        $cities = DB::table('cities')->pluck('city', 'id')->toArray();
+
+        return view('site/edit', [
+            'site' => $site,
+            'categories' => $categories,
+            'cities' => $cities,
+        ]);
+    }
+
+    public function siteUpdate(Request $request)
+    {
+        $user = Site::findOrFail(Auth::id());
+        $site->save();
+    }
+
+    public function siteDestroy(Site $site)
+    {
+        $site = Site::findOrFail($site->id);
+        $site->delete();
+
+        return Redirect::to('/');
+    }
 
     public function sites()
     {
-
         $currentRole = auth()->user()->role;
 
 
@@ -45,6 +83,8 @@ class HomeController extends Controller
         $dataProvider = new EloquentDataProvider(Site::query());
 
         $categories = DB::table('categories')->pluck('name', 'id')->toArray();
+        $cities = DB::table('cities')->pluck('city', 'id')->toArray();
+
 
         $gridData = [
             'dataProvider' => $dataProvider,
@@ -53,6 +93,7 @@ class HomeController extends Controller
             ],
             'rowsPerPage' => 100,
             'use_filters' => true,
+            'strictFilters' => true,
             'useSendButtonAnyway' => false,
             'searchButtonLabel' => 'Поиск',
             'resetButtonLabel' => 'Сброс',
@@ -81,40 +122,67 @@ class HomeController extends Controller
                         'width' => '15%'
                     ]
                 ],
+
                 [
-                    'attribute' => 'city',
+                    'attribute' => 'city_id',
                     'label' => 'Город',
-                ],
-                [
-                    'attribute' => 'city2',
-                    'label' => 'Город локатив',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->city : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'city_id', //for some reason works LIKE
+                        'data' => $cities
+                    ],
+                    'htmlAttributes' => [
+                        'width' => '15%'
+                    ]
                 ],
                 [
                     'attribute' => 'prf',
                     'label' => 'Партнёр',
                 ],
-
+                [
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class,
+                    'actionTypes' => [ // Required
+                        'view' => function ($data) {
+                            return '/site/' . $data->id . '/view';
+                        },
+                        'edit' => function ($data) {
+                            return '/site/' . $data->id . '/edit';
+                        },
+                        [
+                            'class' => Delete::class, // Required
+                            'url' => function ($data) { // Optional
+                                return '/site/' . $data->id . '/destroy';
+                            },
+                            'htmlAttributes' => [ // Optional
+                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
+                            ],
+                        ],
+                        'htmlAttributes' => [ // Html attributes for <img> tag.
+                            'width' => '350',
+                        ]
+                    ],
+                ],
 //                [
-//                    'label' => 'Actions', // Optional
-//                    'class' => Itstructure\GridView\Columns\ActionColumn::class, // Required
-//                    'actionTypes' => [ // Required
-//                        'view',
-//                        'delete',
-////                        'edit' => function ($data) {
-////                            return '/admin/pages/' . $data->id . '/edit';
-////                        },
-//                        [
-//                            'class' => Itstructure\GridView\Actions\Delete::class, // Required
-//                            'url' => function ($data) { // Optional
-//                                return '/admin/pages/' . $data->id . '/delete';
-//                            },
-//                            'htmlAttributes' => [ // Optional
-//                                'target' => '_blank',
-//                                'style' => 'color: red; font-size: 16px;',
-//                                'onclick' => 'return window.confirm("Вы уверены что хотите удалить?");'
-//                            ],
-//                        ],
-//                    ],
+//                    'class' => CheckboxColumn::class,
+//                    'field' => 'delete',
+//                    'attribute' => 'id'
+//                ]
+//                [
+//                    'class' => CheckboxColumn::class,
+//                    'label' => 'Множ. удаление',
+//                    'style' => 'font-size: 10px;',
+//                    'field' => 'delete', // REQUIRED.
+//                    'attribute' => 'id', // REQUIRED.
+//                    'htmlAttributes' => [ // Html attributes for <img> tag.
+//                        'width' => '50',
+//                    ]
+////                    'display' => function ($row) {
+////                        return {...condition to return true for displaying...};
+////                    }
 //                ],
             ],
         ];
@@ -219,7 +287,7 @@ class HomeController extends Controller
                     'attribute' => 'role_id',
                     'label' => 'Роль',
                     'value' => function ($row) {
-                        return $row->role->name;
+                        return ($row->role) ? $row->role->name : '';
                     },
                     'filter' => [
                         'class' => DropdownFilter::class,

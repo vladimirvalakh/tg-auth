@@ -7,7 +7,7 @@
                     Категория: <b>{{$site->category->name}}</b><br />
                     URL: <b><a href="{{$site->url}}" target="_blank">{{$site->url}}</a></b><br />
                     Город: <b>{{$site->location->city }}</b><br />
-                    Город локатив: <b>{{$site->city2}}</b><br />
+                    Город локатив: <b>{{$site->location->locative}}</b><br />
                     Адрес: <b>{{$site->address}}</b><br />
                     Телефон: <b>{{$site->phone1}}</b><br />
                     Email: <b>{{$site->email}}</b><br />

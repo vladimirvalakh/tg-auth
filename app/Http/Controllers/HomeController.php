@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use http\Env\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Itstructure\GridView\Actions\Delete;
@@ -22,7 +22,6 @@ use Itstructure\GridView\Formatters\UrlFormatter;
 
 class HomeController extends Controller
 {
-
     public function callAction($method, $parameters)
     {
         $currentRole = auth()->user()->role;
@@ -56,10 +55,32 @@ class HomeController extends Controller
         ]);
     }
 
-    public function siteUpdate(Request $request)
+    public function siteUpdate(Request $request, Site $site)
     {
-        $user = Site::findOrFail(Auth::id());
-        $site->save();
+        Site::find($site->id)->update([
+            'cat_id' => $request->input('cat_id'),
+            'url' => $request->input('url'),
+            'city_id' => $request->input('city_id'),
+            'address' => $request->input('address'),
+            'phone1' => $request->input('phone1'),
+            'phone2' => $request->input('phone2'),
+            'email' => $request->input('email'),
+            'email2' => $request->input('email2'),
+            'koeff' => $request->input('koeff'),
+            'mail_domain' => $request->input('mail_domain'),
+            'YmetricaId' => $request->input('YmetricaId'),
+            'VENYOOId' => $request->input('VENYOOId'),
+            'tgchatid' => $request->input('tgchatid'),
+            'GMiframe1' => $request->input('GMiframe1'),
+            'GMiframe2' => $request->input('GMiframe2'),
+            'areas' => $request->input('areas'),
+            'crm' => $request->input('crm'),
+            'crm_pass' => $request->input('crm_pass'),
+            'crm_u' => $request->input('crm_u'),
+            'prf' => $request->input('prf'),
+        ]);
+
+        return Redirect::route('sites')->with('status', 'site-updated');
     }
 
     public function siteDestroy(Site $site)
@@ -76,15 +97,35 @@ class HomeController extends Controller
 
 
         if ($currentRole->slug === 'moderator') {
-            return view('moderator_dashboard');
+            $actionTypes = [
+                'view' => function ($data) {
+                    return '/site/' . $data->id . '/view';
+                },
+                'edit' => function ($data) {
+                    return '/site/' . $data->id . '/edit';
+                },
+                [
+                    'class' => Delete::class, // Required
+                    'url' => function ($data) { // Optional
+                        return '/site/' . $data->id . '/destroy';
+                    },
+                    'htmlAttributes' => [ // Optional
+                        'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
+                    ],
+                ],
+            ];
+        } else {
+            $actionTypes = [
+                'view' => function ($data) {
+                    return '/site/' . $data->id . '/view';
+                },
+                'edit' => function ($data) {
+                    return '/site/' . $data->id . '/edit';
+                },
+            ];
         }
 
-
         $dataProvider = new EloquentDataProvider(Site::query());
-
-        $categories = DB::table('categories')->pluck('name', 'id')->toArray();
-        $cities = DB::table('cities')->pluck('city', 'id')->toArray();
-
 
         $gridData = [
             'dataProvider' => $dataProvider,
@@ -100,12 +141,37 @@ class HomeController extends Controller
 
             'columnFields' => [
                 [
+                    'label' => 'Субъект РФ',
+                    'format' => 'html',
+                    'filter' => false,
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->subject_rf : "";
+                    },
+                ],
+                [
+                    'attribute' => 'city_id',
+                    'label' => 'Город',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->city : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'city_id', //for some reason works LIKE
+                        'data' => City::citiesList(),
+                    ],
+                ],
+                [
                     'attribute' => 'url',
                     'label' => 'Сайт',
                     'format' => 'html',
                     'value' => function ($row) {
                         return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
                     },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'url',
+                        'data' => Site::urlsList(),
+                    ],
                 ],
                 [
                     'attribute' => 'cat_id',
@@ -116,187 +182,32 @@ class HomeController extends Controller
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
-                        'data' => $categories
+                        'data' => Category::categoriesList(),
                     ],
-                    'htmlAttributes' => [
-                        'width' => '15%'
-                    ]
+                ],
+                [
+                    'label' => 'Цена за лид',
+                    'format' => 'html',
+                    'filter' => false,
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->price_per_lead : "";
+                    },
                 ],
 
-                [
-                    'attribute' => 'city_id',
-                    'label' => 'Город',
-                    'value' => function ($row) {
-                        return ($row->location) ? $row->location->city : "";
-                    },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'city_id', //for some reason works LIKE
-                        'data' => $cities
-                    ],
-                    'htmlAttributes' => [
-                        'width' => '15%'
-                    ]
-                ],
+
                 [
                     'attribute' => 'prf',
                     'label' => 'Партнёр',
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'prf',
+                        'data' => Site::prfList(),
+                    ],
                 ],
                 [
                     'label' => 'Действия',
                     'class' => ActionColumn::class,
-                    'actionTypes' => [ // Required
-                        'view' => function ($data) {
-                            return '/site/' . $data->id . '/view';
-                        },
-                        'edit' => function ($data) {
-                            return '/site/' . $data->id . '/edit';
-                        },
-                        [
-                            'class' => Delete::class, // Required
-                            'url' => function ($data) { // Optional
-                                return '/site/' . $data->id . '/destroy';
-                            },
-                            'htmlAttributes' => [ // Optional
-                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
-                            ],
-                        ],
-                        'htmlAttributes' => [ // Html attributes for <img> tag.
-                            'width' => '350',
-                        ]
-                    ],
-                ],
-//                [
-//                    'class' => CheckboxColumn::class,
-//                    'field' => 'delete',
-//                    'attribute' => 'id'
-//                ]
-//                [
-//                    'class' => CheckboxColumn::class,
-//                    'label' => 'Множ. удаление',
-//                    'style' => 'font-size: 10px;',
-//                    'field' => 'delete', // REQUIRED.
-//                    'attribute' => 'id', // REQUIRED.
-//                    'htmlAttributes' => [ // Html attributes for <img> tag.
-//                        'width' => '50',
-//                    ]
-////                    'display' => function ($row) {
-////                        return {...condition to return true for displaying...};
-////                    }
-//                ],
-            ],
-        ];
-
-
-        return view('dashboard', [
-            'dataProvider' => $dataProvider,
-            'gridData' => $gridData
-        ]);
-    }
-
-    public function categories()
-    {
-
-        $currentRole = auth()->user()->role;
-
-        if (!$currentRole) {
-            return view('set_role');
-        }
-
-        if ($currentRole->slug === 'moderator') {
-            return view('moderator_dashboard');
-        }
-
-
-        $dataProvider = new EloquentDataProvider(Category::query());
-
-        $gridData = [
-            'dataProvider' => $dataProvider,
-            'paginatorOptions' => [
-                'pageName' => 'p'
-            ],
-            'rowsPerPage' => 100,
-            'use_filters' => true,
-            'useSendButtonAnyway' => false,
-            'searchButtonLabel' => 'Поиск',
-            'resetButtonLabel' => 'Сброс',
-
-            'columnFields' => [
-                [
-                    'attribute' => 'url',
-                    'label' => 'Сайт',
-                    'format' => 'html',
-                    'value' => function ($row) {
-                        return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
-                    },
-                ],
-                [
-                    'attribute' => 'city',
-                    'label' => 'Город',
-                ],
-                [
-                    'attribute' => 'city2',
-                    'label' => 'Город локатив',
-                ],
-            ],
-        ];
-
-
-        return view('dashboard', [
-            'dataProvider' => $dataProvider,
-            'gridData' => $gridData
-        ]);
-    }
-
-    public function users()
-    {
-
-        $currentRole = auth()->user()->role;
-
-        if (!$currentRole) {
-            return view('set_role');
-        }
-
-        if ($currentRole->slug === 'moderator') {
-            return view('moderator_dashboard');
-        }
-
-
-        $dataProvider = new EloquentDataProvider(User::query());
-
-        $gridData = [
-            'dataProvider' => $dataProvider,
-            'paginatorOptions' => [
-                'pageName' => 'p'
-            ],
-            'rowsPerPage' => 100,
-            'use_filters' => true,
-            'useSendButtonAnyway' => false,
-            'searchButtonLabel' => 'Поиск',
-            'resetButtonLabel' => 'Сброс',
-
-            'columnFields' => [
-                [
-                    'attribute' => 'name',
-                    'label' => 'Имя',
-                    'htmlAttributes' => [
-                        'width' => '30%'
-                    ]
-                ],
-                [
-                    'attribute' => 'role_id',
-                    'label' => 'Роль',
-                    'value' => function ($row) {
-                        return ($row->role) ? $row->role->name : '';
-                    },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'role_id', // REQUIRED if 'attribute' is not defined for column.
-                        'data' => DB::table('roles')->pluck('name', 'id')->toArray()
-                    ],
-                    'htmlAttributes' => [
-                        'width' => '15%'
-                    ]
+                    'actionTypes' => $actionTypes,
                 ],
             ],
         ];
@@ -316,11 +227,6 @@ class HomeController extends Controller
         if (!$currentRole) {
             return view('set_role');
         }
-
-        if ($currentRole->slug === 'moderator') {
-            return view('moderator_dashboard');
-        }
-
 
         $dataProvider = new EloquentDataProvider(Role::query());
 
@@ -349,75 +255,4 @@ class HomeController extends Controller
             'gridData' => $gridData
         ]);
     }
-
-
-
-//    /**
-//     * Display the user's profile form.
-//     */
-//    public function edit(Request $request): View
-//    {
-//        return view('site.edit', [
-//            'user' => $request->user(),
-//        ]);
-//    }
-
-
-
-//    /**
-//     * Update the user's profile information.
-//     */
-//    public function update(ProfileUpdateRequest $request): RedirectResponse
-//    {
-//        $request->user()->fill($request->validated());
-//
-//        if ($request->user()->isDirty('email')) {
-//            $request->user()->email_verified_at = null;
-//        }
-//
-//        $request->user()->save();
-//
-//        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-//    }
-
-//    /**
-//     * Delete the user's account.
-//     */
-//    public function destroy(Request $request): RedirectResponse
-//    {
-//        $request->validateWithBag('userDeletion', [
-//            'password' => ['required', 'current_password'],
-//        ]);
-//
-//        $user = $request->user();
-//
-//        Auth::logout();
-//
-//        $user->delete();
-//
-//        $request->session()->invalidate();
-//        $request->session()->regenerateToken();
-//
-//        return Redirect::to('/');
-//    }
-//
-//    private function checkTelegramAuthorization($auth_data) {
-//        $check_hash = $auth_data['hash'];
-//        unset($auth_data['hash']);
-//        $data_check_arr = [];
-//        foreach ($auth_data as $key => $value) {
-//            $data_check_arr[] = $key . '=' . $value;
-//        }
-//        sort($data_check_arr);
-//        $data_check_string = implode("\n", $data_check_arr);
-//        $secret_key = hash('sha256', env('TELEGRAM_BOT_TOKEN'), true);
-//        $hash = hash_hmac('sha256', $data_check_string, $secret_key);
-//        if (strcmp($hash, $check_hash) !== 0) {
-//            throw new Exception('Data is NOT from Telegram');
-//        }
-//        if ((time() - $auth_data['auth_date']) > 86400) {
-//            throw new Exception('Data is outdated');
-//        }
-//        return $auth_data;
-//    }
 }

@@ -9,3 +9,20 @@
         </div>
     </div>
 </x-app-layout>
+
+<script>
+    $('select').select2({
+        "language": {
+            "noResults": function(){
+                return "Ничего не найдено";
+            }
+        },
+        escapeMarkup: function (markup) {
+            return markup;
+        }
+    });
+
+    $('select').on('select2:select', function () {
+        $('#grid_view_search_button').click();
+    });
+</script>

@@ -26,4 +26,9 @@ class Role extends Model
     public function users() {
         return $this->hasMany('App\User', 'role_id');
     }
+
+    public static function getRoleName($role_id)
+    {
+        return Role::where('id', $role_id)->value('name');
+    }
 }

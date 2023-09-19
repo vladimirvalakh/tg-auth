@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use function Monolog\getName;
 
 /**
  * Class User
@@ -18,6 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property integer $role_id
  * @property string $username
  * @property string $auth_key
+ * @property Role $role
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  */

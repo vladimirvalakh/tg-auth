@@ -10,10 +10,70 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Role;
 use Exception;
+use Itstructure\GridView\DataProviders\EloquentDataProvider;
+use Itstructure\GridView\Filters\DropdownFilter;
 
 class ProfileController extends Controller
 {
+
+    public function list()
+    {
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role');
+        }
+
+        $dataProvider = new EloquentDataProvider(User::query());
+
+        $gridData = [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'name',
+                    'label' => 'Имя',
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'name',
+                        'data' => DB::table('users')->pluck('name', 'name')->toArray()
+                    ],
+                ],
+                [
+                    'attribute' => 'role_id',
+                    'label' => 'Роль',
+                    'value' => function ($row) {
+                        //return ($row->role) ? $row->role->name : '';
+                        return ($row->role_id) ? Role::getRoleName($row->role_id) : '';
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'role_id', // REQUIRED if 'attribute' is not defined for column.
+                        'data' => DB::table('roles')->pluck('name', 'id')->toArray()
+                    ],
+                ],
+            ],
+        ];
+
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData
+        ]);
+    }
+
+
+
     /**
      * Display the user's profile form.
      */

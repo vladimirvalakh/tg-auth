@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class City
@@ -36,5 +37,15 @@ class City extends Model
 
     public function sites() {
         return $this->hasMany('App\Site', 'city_id');
+    }
+
+    public static function citiesList(): Array
+    {
+        return DB::table('cities')->orderBy('city')->pluck('city', 'id')->toArray();
+    }
+
+    public static function subjectsRfList(): Array
+    {
+        return DB::table('cities')->orderBy('subject_rf')->pluck('subject_rf', 'subject_rf')->toArray();
     }
 }

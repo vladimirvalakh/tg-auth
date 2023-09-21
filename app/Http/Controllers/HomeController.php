@@ -4,21 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
 use Itstructure\GridView\Actions\Delete;
 use Itstructure\GridView\Columns\ActionColumn;
-use Itstructure\GridView\Columns\CheckboxColumn;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use App\Models\Site;
+use App\Models\Rent;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\User;
 use App\Models\Role;
-use Illuminate\Foundation\Auth;
 use Illuminate\Support\Facades\DB;
-
 use Itstructure\GridView\Filters\DropdownFilter;
-use Itstructure\GridView\Formatters\UrlFormatter;
 
 class HomeController extends Controller
 {
@@ -94,7 +90,6 @@ class HomeController extends Controller
     public function sites()
     {
         $currentRole = auth()->user()->role;
-
 
         if ($currentRole->slug === 'moderator') {
             $actionTypes = [
@@ -186,6 +181,34 @@ class HomeController extends Controller
                     ],
                 ],
                 [
+                    'label' => 'Статус аренды',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->status : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Срок аренды до',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->period : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Заявок 3 мес',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->p90 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Заявок 30 дней',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->p30 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
                     'label' => 'Цена за лид',
                     'format' => 'html',
                     'filter' => false,
@@ -193,16 +216,12 @@ class HomeController extends Controller
                         return ($row->location) ? $row->location->price_per_lead : "";
                     },
                 ],
-
-
                 [
-                    'attribute' => 'prf',
-                    'label' => 'Партнёр',
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'prf',
-                        'data' => Site::prfList(),
-                    ],
+                    'label' => 'Итого выплачено',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->sum : '';
+                    },
+                    'filter' => false,
                 ],
                 [
                     'label' => 'Действия',
@@ -211,7 +230,6 @@ class HomeController extends Controller
                 ],
             ],
         ];
-
 
         return view('dashboard', [
             'dataProvider' => $dataProvider,
@@ -248,7 +266,6 @@ class HomeController extends Controller
                 ],
             ],
         ];
-
 
         return view('dashboard', [
             'dataProvider' => $dataProvider,

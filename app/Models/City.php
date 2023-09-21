@@ -35,16 +35,17 @@ class City extends Model
         'price_per_lead',
     ];
 
-    public function sites() {
+    public function sites()
+    {
         return $this->hasMany('App\Site', 'city_id');
     }
 
-    public static function citiesList(): Array
+    public static function citiesList(): array
     {
         return DB::table('cities')->orderBy('city')->pluck('city', 'id')->toArray();
     }
 
-    public static function subjectsRfList(): Array
+    public static function subjectsRfList(): array
     {
         return DB::table('cities')->orderBy('subject_rf')->pluck('subject_rf', 'subject_rf')->toArray();
     }

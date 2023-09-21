@@ -56,6 +56,11 @@ class Site extends Model
         return $this->belongsTo('App\Models\Category', 'cat_id');
     }
 
+    public function rent()
+    {
+        return $this->hasOne('App\Models\Rent', 'site_id');
+    }
+
     public function location()
     {
         return $this->belongsTo('App\Models\City', 'city_id');

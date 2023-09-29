@@ -215,11 +215,7 @@ class HomeController extends Controller
                     'value' => function ($row) {
                         return  Str::mask($row->url, '*', 2, -4);
                     },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'url',
-                        'data' => Site::urlsList(),
-                    ],
+                    'filter' => false,
                 ],
                 [
                     'label' => 'Заявок 3 мес',

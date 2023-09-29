@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,9 +27,11 @@ Route::get('/roles', [HomeController::class, 'roles'])->name('roles')->middlewar
 
 Route::middleware('auth')->group(function () {
     Route::get('/site/{site}/view', [HomeController::class, 'siteView'])->name('site.view');
+    Route::get('/site/{site}/data', [HomeController::class, 'siteData'])->name('site.data');
     Route::get('/site/{site}/edit', [HomeController::class, 'siteEdit'])->name('site.edit');
     Route::get('/site/{site}/destroy', [HomeController::class, 'siteDestroy'])->name('site.destroy');
     Route::put('/site/{site}/update', [HomeController::class, 'siteUpdate'])->name('site.update');
+    Route::post('/site/rent', [OrderController::class, 'store'])->name('order.store');
 
     Route::get('/category/{category}/view', [CategoryController::class, 'view'])->name('category.view');
     Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');

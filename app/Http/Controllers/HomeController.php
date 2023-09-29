@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Itstructure\GridView\Actions\Button;
+use Itstructure\GridView\Actions\CustomHtmlTag;
 use Itstructure\GridView\Actions\Delete;
 use Itstructure\GridView\Columns\ActionColumn;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
+use Carbon\Carbon;
 use App\Models\Site;
 use App\Models\Rent;
 use App\Models\City;
@@ -46,6 +49,15 @@ class HomeController extends Controller
         return view('site/view', [
             'site' => $site
         ]);
+    }
+
+    public function siteData(Site $site)
+    {
+        return [
+            'site' => $site,
+            'location' => $site->location,
+            'period_date' => Carbon::now()->addMonth()->format('d.m.Y'),
+        ];
     }
 
     public function siteEdit(Site $site)
@@ -163,7 +175,8 @@ class HomeController extends Controller
             'cat_id',
             'rents.status as rent_status',
             'rents.p90 as rent_p90',
-            'rents.p30 as rent_p30'
+            'rents.p30 as rent_p30',
+            'rents.period as rent_period',
         )->whereIn('sites.city_id', json_decode(auth()->user()->cities, true))
         ->join('rents', 'rents.site_id', '=', 'sites.id')
         ->where('rents.status', 'В поиске');
@@ -223,12 +236,33 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'label' => 'Цена аренды за месяц',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->rental_price_per_month : "";
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Срок аренды',
+                    'value' => function ($row) {
+                        return ($row->rent_period) ? $row->rent_period : "";
+                    },
+                    'filter' => false,
+                ],
+                [
                     'label' => 'Действия',
-                    'class' => ActionColumn::class,
-                    'actionTypes' => [
-                        'view' => function ($data) {
-                            return '/site/' . $data->site_id . '/view';
-                        },
+                    'class' => ActionColumn::class, // Required
+                    'htmlAttributes' => [
+                        'width' => '170'
+                    ],
+                    'actionTypes' => [ // Required
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->site_id . '/data';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-success rent-site-modal-button">Взять в аренду</button>',
+                        ]
                     ],
                 ],
             ],

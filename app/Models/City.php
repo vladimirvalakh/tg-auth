@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $population
  * @property string $tax
  * @property integer $price_per_lead
+ * @property integer $rental_price_per_month
  */
 class City extends Model
 {
@@ -33,6 +34,7 @@ class City extends Model
         'population',
         'tax',
         'price_per_lead',
+        'rental_price_per_month'
     ];
 
     public function sites()

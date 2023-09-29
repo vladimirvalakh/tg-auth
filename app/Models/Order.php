@@ -28,7 +28,12 @@ class Order extends Model
         'phone',
         'city_id',
         'site_id',
+        'user_id',
         'status',
+        'emails',
+        'viber',
+        'source',
+        'info'
     ];
 
     public function users() {

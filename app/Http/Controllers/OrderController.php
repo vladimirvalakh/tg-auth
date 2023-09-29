@@ -23,6 +23,6 @@ class OrderController extends Controller
 
         Order::create($data);
 
-        return Redirect::route('sites');
+        return Redirect::route('sites')->with('success','Заявка успешно создана, перейдите в личный кабинет для управления.');
     }
 }

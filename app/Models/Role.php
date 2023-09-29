@@ -14,6 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Role extends Model
 {
+    public const ARENDATOR_SLUG = 'arendator';
+    public const MODERATOR_SLUG = 'moderator';
     /**
      * The attributes that are mass assignable.
      *

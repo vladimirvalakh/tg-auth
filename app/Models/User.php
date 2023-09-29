@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\City;
 use function Monolog\getName;
 
 /**
@@ -17,6 +18,7 @@ use function Monolog\getName;
  * @property string $email
  * @property string $telegram_id
  * @property integer $role_id
+ * @property string $cities
  * @property string $username
  * @property string $auth_key
  * @property Role $role
@@ -37,6 +39,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role_id',
+        'cities',
     ];
 
     /**

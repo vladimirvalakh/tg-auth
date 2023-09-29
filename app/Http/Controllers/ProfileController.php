@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Foundation\Auth\User;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\City;
 use App\Models\Role;
 use Exception;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
@@ -134,6 +135,20 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
+    public function cityUpdate(Request $request): RedirectResponse
+    {
+        $user = User::findOrFail(Auth::id());
+
+        $user->cities = $request->get('cities');
+
+        $user->save();
+
+        return Redirect::route('sites')->with('status', 'city-updated');
+    }
+
+    /**
+     * Update the user's profile information.
+     */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $request->user()->fill($request->validated());
@@ -144,7 +159,18 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('sites')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Delete the user's account.
+     */
+    public function settings(): View
+    {
+        return view('profile.settings', [
+            'user' => auth()->user(),
+            'cities' => City::citiesList(),
+        ]);
     }
 
     /**

@@ -11,7 +11,9 @@ use App\Models\Site;
 use App\Models\Rent;
 use App\Models\City;
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Itstructure\GridView\Filters\DropdownFilter;
@@ -26,6 +28,13 @@ class HomeController extends Controller
             return view('set_role', [
                 'user' => auth()->user(),
                 'roles' => DB::table('roles')->pluck('name', 'id')->toArray(),
+            ]);
+        }
+
+        if ($currentRole && $currentRole->slug == Role::ARENDATOR_SLUG && !auth()->user()->cities) {
+            return view('set_city', [
+                'user' => auth()->user(),
+                'cities' => City::citiesList(),
             ]);
         }
 
@@ -90,39 +99,150 @@ class HomeController extends Controller
     public function sites()
     {
         $currentRole = auth()->user()->role;
-
-        if ($currentRole->slug === 'moderator') {
-            $actionTypes = [
-                'view' => function ($data) {
-                    return '/site/' . $data->id . '/view';
-                },
-                'edit' => function ($data) {
-                    return '/site/' . $data->id . '/edit';
-                },
-                [
-                    'class' => Delete::class, // Required
-                    'url' => function ($data) { // Optional
-                        return '/site/' . $data->id . '/destroy';
-                    },
-                    'htmlAttributes' => [ // Optional
-                        'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
-                    ],
-                ],
-            ];
-        } else {
-            $actionTypes = [
-                'view' => function ($data) {
-                    return '/site/' . $data->id . '/view';
-                },
-                'edit' => function ($data) {
-                    return '/site/' . $data->id . '/edit';
-                },
-            ];
-        }
-
         $dataProvider = new EloquentDataProvider(Site::query());
 
+        if ($currentRole->slug === Role::MODERATOR_SLUG) {
+            $gridData = $this->getDashboardForModeratorRole();
+        } elseif ($currentRole->slug === Role::ARENDATOR_SLUG) {
+            $gridData = $this->getDashboardForArendatorRole();
+        } else {
+            $gridData = $this->getDefaultDashboard();
+        }
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData
+        ]);
+    }
+
+    public function roles()
+    {
+
+        $currentRole = auth()->user()->role;
+
+        if (!$currentRole) {
+            return view('set_role');
+        }
+
+        $dataProvider = new EloquentDataProvider(Role::query());
+
         $gridData = [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'name',
+                    'label' => 'Роль',
+                ],
+            ],
+        ];
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData
+        ]);
+    }
+
+    /**
+     * ARENDATOR DASHBOARD
+     */
+    private function getDashboardForArendatorRole(): array
+    {
+        $sites =  Site::select(
+            'sites.id as site_id',
+            'city_id',
+            'url',
+            'cat_id',
+            'rents.status as rent_status',
+            'rents.p90 as rent_p90',
+            'rents.p30 as rent_p30'
+        )->whereIn('sites.city_id', json_decode(auth()->user()->cities, true))
+        ->join('rents', 'rents.site_id', '=', 'sites.id')
+        ->where('rents.status', 'В поиске');
+
+        $dataProvider = new EloquentDataProvider($sites);
+
+        return [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'strictFilters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'city_id',
+                    'label' => 'Город',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->city : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'city_id', //for some reason works LIKE
+                        'data' => City::userCitiesList(),
+                    ],
+                ],
+                [
+                    'attribute' => 'url',
+                    'label' => 'Сайт',
+                    'format' => 'html',
+                    'value' => function ($row) {
+                        return  Str::mask($row->url, '*', 2, -4);
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'url',
+                        'data' => Site::urlsList(),
+                    ],
+                ],
+                [
+                    'label' => 'Заявок 3 мес',
+                    'value' => function ($row) {
+                        return ($row->rent_p90) ? $row->rent_p90 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Заявок 30 дней',
+                    'value' => function ($row) {
+                        return ($row->rent_p30) ? $row->rent_p30 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class,
+                    'actionTypes' => [
+                        'view' => function ($data) {
+                            return '/site/' . $data->site_id . '/view';
+                        },
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * MODERATOR DASHBOARD
+     */
+    private function getDashboardForModeratorRole(): array
+    {
+        $dataProvider = new EloquentDataProvider(Site::query());
+
+        return [
             'dataProvider' => $dataProvider,
             'paginatorOptions' => [
                 'pageName' => 'p'
@@ -217,59 +337,144 @@ class HomeController extends Controller
                     },
                 ],
                 [
-                    'label' => 'Итого выплачено',
-                    'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->sum : '';
-                    },
-                    'filter' => false,
-                ],
-                [
                     'label' => 'Действия',
                     'class' => ActionColumn::class,
-                    'actionTypes' => $actionTypes,
+                    'actionTypes' => [
+                        'view' => function ($data) {
+                            return '/site/' . $data->id . '/view';
+                        },
+                        'edit' => function ($data) {
+                            return '/site/' . $data->id . '/edit';
+                        },
+                        [
+                            'class' => Delete::class, // Required
+                            'url' => function ($data) { // Optional
+                                return '/site/' . $data->id . '/destroy';
+                            },
+                            'htmlAttributes' => [ // Optional
+                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ];
-
-        return view('dashboard', [
-            'dataProvider' => $dataProvider,
-            'gridData' => $gridData
-        ]);
     }
 
-    public function roles()
+    /**
+     * ARENDATOR DASHBOARD
+     */
+    private function getDefaultDashboard(): array
     {
+        $dataProvider = new EloquentDataProvider(Site::query());
 
-        $currentRole = auth()->user()->role;
-
-        if (!$currentRole) {
-            return view('set_role');
-        }
-
-        $dataProvider = new EloquentDataProvider(Role::query());
-
-        $gridData = [
+        return [
             'dataProvider' => $dataProvider,
             'paginatorOptions' => [
                 'pageName' => 'p'
             ],
             'rowsPerPage' => 100,
             'use_filters' => true,
+            'strictFilters' => true,
             'useSendButtonAnyway' => false,
             'searchButtonLabel' => 'Поиск',
             'resetButtonLabel' => 'Сброс',
 
             'columnFields' => [
                 [
-                    'attribute' => 'name',
-                    'label' => 'Роль',
+                    'label' => 'Субъект РФ',
+                    'format' => 'html',
+                    'filter' => false,
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->subject_rf : "";
+                    },
+                ],
+                [
+                    'attribute' => 'city_id',
+                    'label' => 'Город',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->city : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'city_id', //for some reason works LIKE
+                        'data' => City::citiesList(),
+                    ],
+                ],
+                [
+                    'attribute' => 'url',
+                    'label' => 'Сайт',
+                    'format' => 'html',
+                    'value' => function ($row) {
+                        return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'url',
+                        'data' => Site::urlsList(),
+                    ],
+                ],
+                [
+                    'attribute' => 'cat_id',
+                    'label' => 'Категория',
+                    'value' => function ($row) {
+                        return $row->category->name;
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
+                        'data' => Category::categoriesList(),
+                    ],
+                ],
+                [
+                    'label' => 'Статус аренды',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->status : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Срок аренды до',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->period : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Заявок 3 мес',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->p90 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Заявок 30 дней',
+                    'value' => function ($row) {
+                        return ($row->rent) ? $row->rent->p30 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Цена за лид',
+                    'format' => 'html',
+                    'filter' => false,
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->price_per_lead : "";
+                    },
+                ],
+                [
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class,
+                    'actionTypes' => [
+                        'view' => function ($data) {
+                            return '/site/' . $data->id . '/view';
+                        },
+                        'edit' => function ($data) {
+                            return '/site/' . $data->id . '/edit';
+                        },
+                    ],
                 ],
             ],
         ];
-
-        return view('dashboard', [
-            'dataProvider' => $dataProvider,
-            'gridData' => $gridData
-        ]);
     }
 }

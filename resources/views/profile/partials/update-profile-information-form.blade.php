@@ -26,8 +26,6 @@
         </div>
         @endif
 
-
-
         <div class="form-group flex items-center gap-4">
             <button class="btn btn-md btn-primary" type="submit">Сохранить</button>
 

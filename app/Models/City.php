@@ -45,6 +45,11 @@ class City extends Model
         return DB::table('cities')->orderBy('city')->pluck('city', 'id')->toArray();
     }
 
+    public static function userCitiesList(): array
+    {
+        return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('city')->pluck('city', 'id')->toArray();
+    }
+
     public static function subjectsRfList(): array
     {
         return DB::table('cities')->orderBy('subject_rf')->pluck('subject_rf', 'subject_rf')->toArray();

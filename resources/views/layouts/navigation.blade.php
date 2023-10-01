@@ -1,3 +1,7 @@
+<?php
+use App\Models\Role;
+?>
+
 @php
     $currentRoleSlug = (auth()->user() && auth()->user()->role && auth()->user()->role->slug) ? auth()->user()->role->slug : null;
 @endphp
@@ -10,7 +14,11 @@
                 <a class="nav-link" href="{{route('sites')}}">Сайты</a>
             </li>
 
-            @if($currentRoleSlug === 'moderator')
+            <li class="nav-item @if (request()->routeIs('orders')) active @endif">
+                <a class="nav-link" href="{{route('orders')}}">Заявки</a>
+            </li>
+
+            @if($currentRoleSlug === Role::MODERATOR_SLUG)
                 <li class="nav-item @if (request()->routeIs('categories')) active @endif">
                     <a class="nav-link" href="{{route('categories')}}">Категории</a>
                 </li>
@@ -38,6 +46,8 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{route('profile.edit')}}">Профиль</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{route('orders')}}">Личный кабинет (Заявки)</a>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{{route('profile.settings')}}">Настройки аккаунта</a>
                     <div class="dropdown-divider"></div>

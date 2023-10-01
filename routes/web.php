@@ -46,6 +46,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('/orders', [OrderController::class, 'list'])->name('orders');
+    Route::get('/order/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');
+    Route::put('/order/{order}/update', [OrderController::class, 'update'])->name('order.update');
+    Route::get('/order/{order}/destroy', [OrderController::class, 'destroy'])->name('order.destroy');
+
     Route::patch('role/update', [ProfileController::class, 'roleUpdate'])->name('role.update');
     Route::patch('profile/city-update', [ProfileController::class, 'cityUpdate'])->name('profile.city.update');
 });

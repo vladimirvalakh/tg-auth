@@ -66,6 +66,13 @@ class Site extends Model
         return $this->belongsTo('App\Models\City', 'city_id');
     }
 
+    public static function userUrlsList(): Array
+    {
+        //return DB::table('sites')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('city')->pluck('city', 'id')->toArray();
+
+        return DB::table('sites')->pluck('url', 'url')->toArray();
+    }
+
     public static function urlsList(): Array
     {
         return DB::table('sites')->pluck('url', 'url')->toArray();

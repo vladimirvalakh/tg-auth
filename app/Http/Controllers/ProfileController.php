@@ -80,6 +80,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        if ($request->user()->id != Auth::id()) {
+            abort(403);
+        }
+
         return view('profile.edit', [
             'user' => $request->user(),
             'roles' => DB::table('roles')->pluck('name', 'id')->toArray(),
@@ -186,11 +190,11 @@ class ProfileController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-//        $request->validateWithBag('userDeletion', [
-//            'password' => ['required', 'current_password'],
-//        ]);
-
         $user = $request->user();
+
+        if ($request->user()->id != Auth::id()) {
+            abort(403);
+        }
 
         Auth::logout();
 

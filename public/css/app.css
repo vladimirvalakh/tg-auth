@@ -7,3 +7,11 @@
     background-color: rgba(206, 4, 252, 0.75) !important;
     color: white;
 }
+
+.dashboard-action-button {
+    width: 50px;
+}
+
+.dashboard table {
+    overflow-x: scroll;
+}

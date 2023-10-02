@@ -10,9 +10,11 @@ use App\Models\Role;
 <nav class="navbar navbar-light bg-light  navbar-expand-md d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3  border-bottom shadow-sm">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item @if (request()->routeIs('sites')) active @endif">
-                <a class="nav-link" href="{{route('sites')}}">Сайты</a>
-            </li>
+            @if($currentRoleSlug === Role::MODERATOR_SLUG || $currentRoleSlug === Role::ARENDATOR_SLUG)
+                <li class="nav-item @if (request()->routeIs('sites')) active @endif">
+                    <a class="nav-link" href="{{route('sites')}}">Сайты</a>
+                </li>
+            @endif
 
             <li class="nav-item @if (request()->routeIs('orders')) active @endif">
                 <a class="nav-link" href="{{route('orders')}}">Заявки</a>

@@ -16,6 +16,8 @@ class Role extends Model
 {
     public const ARENDATOR_SLUG = 'arendator';
     public const MODERATOR_SLUG = 'moderator';
+    public const MANAGER_SLUG = 'manager';
+    public const OWNER_SLUG = 'owner';
     /**
      * The attributes that are mass assignable.
      *

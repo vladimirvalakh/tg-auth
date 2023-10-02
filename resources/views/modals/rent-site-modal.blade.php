@@ -8,6 +8,7 @@
 
                 <input type="hidden" name="site_id" id="site_id" value="">
                 <input type="hidden" name="city_id" id="city_id" value="">
+                <input type="hidden" name="rent_id" id="rent_id" value="">
 
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Инструкция</h5>
@@ -17,7 +18,7 @@
                 </div>
                 <div class="modal-body">
                     <p>1. Вы выбрали аренду сайта <b><span class="site_name"></span></b> в городе <b><span class="city_name"></span></b> на 1 месяц до <b><span class="period_date"></span></b>.</p>
-                    <p>2. Переведите <b>375 руб</b> на карту по номеру телефона +79879503604 получатель Алексей Владимирович А., на Сбер (5479 2754 0006 5263) или Тиньков (5536 9138 6743 0734).</p>
+                    <p>2. Переведите <b><span class="rental_price"></span> руб</b> на карту по номеру телефона +79879503604 получатель Алексей Владимирович А., на Сбер (5479 2754 0006 5263) или Тиньков (5536 9138 6743 0734).</p>
 
 
                     <div class="form-group">

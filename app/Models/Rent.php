@@ -14,6 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Rent extends Model
 {
+    public const IN_SEARCH_STATUS = 'В поиске';
+    public const ON_RENT_STATUS = 'В аренде';
+    public const ON_MODERATION_STATUS = 'На модерации';
+
     /**
      * The attributes that are mass assignable.
      *

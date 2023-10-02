@@ -140,30 +140,30 @@ class CategoryController extends Controller
                 ],
 
 
-                [
-                    'label' => 'Действия',
-                    'class' => ActionColumn::class,
-                    'actionTypes' => [ // Required
-                        'view' => function ($data) {
-                            return '/category/' . $data->id . '/view';
-                        },
-                        'edit' => function ($data) {
-                            return '/category/' . $data->id . '/edit';
-                        },
-                        [
-                            'class' => Delete::class, // Required
-                            'url' => function ($data) { // Optional
-                                return '/category/' . $data->id . '/destroy';
-                            },
-                            'htmlAttributes' => [ // Optional
-                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
-                            ],
-                        ],
-                        'htmlAttributes' => [ // Html attributes for <img> tag.
-                            'width' => '350',
-                        ]
-                    ],
-                ],
+//                [
+//                    'label' => 'Действия',
+//                    'class' => ActionColumn::class,
+//                    'actionTypes' => [ // Required
+//                        'view' => function ($data) {
+//                            return '/category/' . $data->id . '/view';
+//                        },
+//                        'edit' => function ($data) {
+//                            return '/category/' . $data->id . '/edit';
+//                        },
+//                        [
+//                            'class' => Delete::class, // Required
+//                            'url' => function ($data) { // Optional
+//                                return '/category/' . $data->id . '/destroy';
+//                            },
+//                            'htmlAttributes' => [ // Optional
+//                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
+//                            ],
+//                        ],
+//                        'htmlAttributes' => [ // Html attributes for <img> tag.
+//                            'width' => '350',
+//                        ]
+//                    ],
+//                ],
             ],
         ];
 

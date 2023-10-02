@@ -46,6 +46,12 @@ class HomeController extends Controller
 
     public function siteView(Site $site)
     {
+        $currentRole = auth()->user()->role;
+
+        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+            abort(403);
+        }
+
         return view('site/view', [
             'site' => $site
         ]);
@@ -53,15 +59,28 @@ class HomeController extends Controller
 
     public function siteData(Site $site)
     {
+        $currentRole = auth()->user()->role;
+
+        if ($currentRole && $currentRole->slug != Role::ARENDATOR_SLUG ) {
+            abort(403);
+        }
+
         return [
             'site' => $site,
             'location' => $site->location,
+            'rent' => $site->rent,
             'period_date' => Carbon::now()->addMonth()->format('d.m.Y'),
         ];
     }
 
     public function siteEdit(Site $site)
     {
+        $currentRole = auth()->user()->role;
+
+        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+            abort(403);
+        }
+
         $categories = DB::table('categories')->pluck('name', 'id')->toArray();
         $cities = DB::table('cities')->pluck('city', 'id')->toArray();
 
@@ -74,6 +93,12 @@ class HomeController extends Controller
 
     public function siteUpdate(Request $request, Site $site)
     {
+        $currentRole = auth()->user()->role;
+
+        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+            abort(403);
+        }
+
         Site::find($site->id)->update([
             'cat_id' => $request->input('cat_id'),
             'url' => $request->input('url'),
@@ -102,6 +127,12 @@ class HomeController extends Controller
 
     public function siteDestroy(Site $site)
     {
+        $currentRole = auth()->user()->role;
+
+        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+            abort(403);
+        }
+
         $site = Site::findOrFail($site->id);
         $site->delete();
 
@@ -110,6 +141,7 @@ class HomeController extends Controller
 
     public function sites()
     {
+
         $currentRole = auth()->user()->role;
         $dataProvider = new EloquentDataProvider(Site::query());
 
@@ -118,7 +150,7 @@ class HomeController extends Controller
         } elseif ($currentRole->slug === Role::ARENDATOR_SLUG) {
             $gridData = $this->getDashboardForArendatorRole();
         } else {
-            $gridData = $this->getDefaultDashboard();
+            return redirect('orders');
         }
 
         return view('dashboard', [
@@ -370,20 +402,26 @@ class HomeController extends Controller
                     'label' => 'Действия',
                     'class' => ActionColumn::class,
                     'actionTypes' => [
-                        'view' => function ($data) {
-                            return '/site/' . $data->id . '/view';
-                        },
-                        'edit' => function ($data) {
-                            return '/site/' . $data->id . '/edit';
-                        },
                         [
-                            'class' => Delete::class, // Required
-                            'url' => function ($data) { // Optional
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->id . '/view';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-primary mb-1">Детали</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->id . '/edit';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
                                 return '/site/' . $data->id . '/destroy';
                             },
-                            'htmlAttributes' => [ // Optional
-                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
-                            ],
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger mb-1">Удалить</button>',
                         ],
                     ],
                 ],

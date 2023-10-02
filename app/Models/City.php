@@ -42,22 +42,28 @@ class City extends Model
         return $this->hasMany('App\Site', 'city_id');
     }
 
-    public static function citiesList(): array
+    public static function citiesList(): ?array
     {
         return DB::table('cities')->orderBy('city')->pluck('city', 'id')->toArray();
     }
 
-    public static function userSubjectRFList(): array
+    public static function userSubjectRFList(): ?array
     {
+        if (empty(json_decode(auth()->user()->cities))) {
+            return [];
+        }
         return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('city')->pluck('subject_rf', 'subject_rf')->toArray();
     }
 
-    public static function userCitiesList(): array
+    public static function userCitiesList(): ?array
     {
+        if (empty(json_decode(auth()->user()->cities))) {
+            return [];
+        }
         return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('city')->pluck('city', 'id')->toArray();
     }
 
-    public static function subjectsRfList(): array
+    public static function subjectsRfList(): ?array
     {
         return DB::table('cities')->orderBy('subject_rf')->pluck('subject_rf', 'subject_rf')->toArray();
     }

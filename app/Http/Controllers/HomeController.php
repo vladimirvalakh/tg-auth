@@ -430,7 +430,7 @@ class HomeController extends Controller
     }
 
     /**
-     * ARENDATOR DASHBOARD
+     * DEFAULT DASHBOARD
      */
     private function getDefaultDashboard(): array
     {
@@ -534,12 +534,27 @@ class HomeController extends Controller
                     'label' => 'Действия',
                     'class' => ActionColumn::class,
                     'actionTypes' => [
-                        'view' => function ($data) {
-                            return '/site/' . $data->id . '/view';
-                        },
-                        'edit' => function ($data) {
-                            return '/site/' . $data->id . '/edit';
-                        },
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->id . '/view';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-primary mb-1">Детали</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->id . '/edit';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->id . '/destroy';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger mb-1">Удалить</button>',
+                        ],
                     ],
                 ],
             ],

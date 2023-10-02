@@ -197,11 +197,7 @@ class OrderController extends Controller
                     'value' => function ($row) {
                         return ($row->location) ? $row->location->subject_rf : "";
                     },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'orders.city_id', //for some reason works LIKE
-                        'data' => City::userSubjectRFList(),
-                    ],
+                    'filter' => false,
                 ],
                 [
                     'attribute' => 'city_id',
@@ -211,7 +207,7 @@ class OrderController extends Controller
                     },
                     'filter' => [
                         'class' => DropdownFilter::class,
-                        'name' => 'orders.city_id', //for some reason works LIKE
+                        'name' => 'orders.city_id',
                         'data' => City::userCitiesList(),
                     ],
                 ],
@@ -366,7 +362,7 @@ class OrderController extends Controller
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'orders.city_id', //for some reason works LIKE
-                        'data' => City::userCitiesList(),
+                        'data' => City::citiesList(),
                     ],
                 ],
                 [
@@ -530,7 +526,7 @@ class OrderController extends Controller
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'orders.city_id', //for some reason works LIKE
-                        'data' => City::userCitiesList(),
+                        'data' => City::citiesList(),
                     ],
                 ],
                 [
@@ -667,7 +663,7 @@ class OrderController extends Controller
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'orders.city_id', //for some reason works LIKE
-                        'data' => City::userCitiesList(),
+                        'data' => City::citiesList(),
                     ],
                 ],
                 [
@@ -739,7 +735,28 @@ class OrderController extends Controller
      */
     private function getDefaultDashboard(): array
     {
-        $dataProvider = new EloquentDataProvider(Site::query());
+        $sites =  Site::select(
+            'sites.id as site_id',
+            'sites.city_id as sites_city_id',
+            'orders.city_id as city_id',
+            'orders.rental_period_up_to',
+            'orders.id as order_id',
+            'orders.source',
+            'cities.id as cities_id',
+            'cities.price_per_lead as price_per_lead',
+            'url',
+            'cat_id',
+            'rents.status as rent_status',
+            'rents.p90 as rent_p90',
+            'rents.p30 as rent_p30',
+            'rents.period as rent_period',
+        )
+            ->join('rents', 'rents.site_id', '=', 'sites.id')
+            ->join('orders', 'orders.site_id', '=', 'sites.id')
+            ->join('cities', 'orders.city_id', '=', 'cities.id')
+            ->orderBy('rents.status', 'DESC');
+
+        $dataProvider = new EloquentDataProvider($sites);
 
         return [
             'dataProvider' => $dataProvider,
@@ -753,14 +770,16 @@ class OrderController extends Controller
             'searchButtonLabel' => 'Поиск',
             'resetButtonLabel' => 'Сброс',
 
+
             'columnFields' => [
                 [
+                    'attribute' => 'subject_rf',
                     'label' => 'Субъект РФ',
                     'format' => 'html',
-                    'filter' => false,
                     'value' => function ($row) {
                         return ($row->location) ? $row->location->subject_rf : "";
                     },
+                    'filter' => false,
                 ],
                 [
                     'attribute' => 'city_id',
@@ -770,7 +789,7 @@ class OrderController extends Controller
                     },
                     'filter' => [
                         'class' => DropdownFilter::class,
-                        'name' => 'city_id', //for some reason works LIKE
+                        'name' => 'orders.city_id', //for some reason works LIKE
                         'data' => City::citiesList(),
                     ],
                 ],
@@ -788,63 +807,78 @@ class OrderController extends Controller
                     ],
                 ],
                 [
-                    'attribute' => 'cat_id',
-                    'label' => 'Категория',
-                    'value' => function ($row) {
-                        return $row->category->name;
-                    },
+                    'attribute' => 'rent_status',
+                    'label' => 'Статус аренды',
+                    'htmlAttributes' => [
+                        'width' => '150'
+                    ],
                     'filter' => [
                         'class' => DropdownFilter::class,
-                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
-                        'data' => Category::categoriesList(),
+                        'name' => 'rents.status',
+                        'data' => DB::table('rents')->pluck('status', 'status')->toArray()
                     ],
                 ],
                 [
-                    'label' => 'Статус аренды',
-                    'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->status : '';
-                    },
-                    'filter' => false,
-                ],
-                [
+                    'attribute' => 'rental_period_up_to',
                     'label' => 'Срок аренды до',
-                    'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->period : '';
-                    },
                     'filter' => false,
                 ],
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->p90 : '';
+                        return ($row->rent_p90) ? $row->rent_p90 : '';
                     },
                     'filter' => false,
                 ],
                 [
                     'label' => 'Заявок 30 дней',
                     'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->p30 : '';
+                        return ($row->rent_p30) ? $row->rent_p30 : '';
                     },
                     'filter' => false,
                 ],
                 [
-                    'label' => 'Цена за лид',
-                    'format' => 'html',
+                    'attribute' => 'source',
+                    'label' => 'Источник заявок',
                     'filter' => false,
+                ],
+                [
+                    'attribute' => 'price_per_lead',
+                    'label' => 'Цена за лид',
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Цена аренды за месяц',
                     'value' => function ($row) {
-                        return ($row->location) ? $row->location->price_per_lead : "";
+                        return ($row->location) ? $row->location->rental_price_per_month : "";
                     },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Срок аренды',
+                    'value' => function ($row) {
+                        return ($row->rent_period) ? $row->rent_period : "";
+                    },
+                    'filter' => false,
                 ],
                 [
                     'label' => 'Действия',
                     'class' => ActionColumn::class,
                     'actionTypes' => [
-                        'view' => function ($data) {
-                            return '/site/' . $data->id . '/view';
-                        },
-                        'edit' => function ($data) {
-                            return '/site/' . $data->id . '/edit';
-                        },
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/order/' . $data->order_id . '/edit';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/order/' . $data->order_id . '/destroy';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger">Удалить</button>',
+                        ],
                     ],
                 ],
             ],

@@ -58,6 +58,12 @@
         $('select').on('select2:select', function () {
             $('#grid_view_search_button').click();
         });
+
+        $('select').on('select2:close', function () {
+            $('#grid_view_search_button').click();
+        });
+
+        $('#grid_view_reset_button').hide();
     </script>
 
 </html>

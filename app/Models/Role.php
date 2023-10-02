@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Role extends Model
 {
+    public const ADMINISTRATOR_SLUG = 'administrator';
     public const ARENDATOR_SLUG = 'arendator';
     public const MODERATOR_SLUG = 'moderator';
     public const MANAGER_SLUG = 'manager';

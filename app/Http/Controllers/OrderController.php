@@ -173,6 +173,7 @@ class OrderController extends Controller
             'rents.p90 as rent_p90',
             'rents.p30 as rent_p30',
             'rents.period as rent_period',
+            'cities.rental_price_per_month as rental_price_per_month'
         )->whereIn('sites.city_id', json_decode(auth()->user()->cities, true))
             ->join('rents', 'rents.site_id', '=', 'sites.id')
             ->join('orders', 'orders.site_id', '=', 'sites.id')
@@ -216,7 +217,6 @@ class OrderController extends Controller
                     ],
                 ],
                 [
-                    'attribute' => 'url',
                     'label' => 'Сайт',
                     'format' => 'html',
                     'value' => function ($row) {
@@ -248,6 +248,7 @@ class OrderController extends Controller
 //                    'filter' => false,
 //                ],
                 [
+                    'attribute' => 'rent_p90',
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
                         return ($row->rent_p90) ? $row->rent_p90 : '';
@@ -255,6 +256,7 @@ class OrderController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'attribute' => 'rent_p30',
                     'label' => 'Заявок 30 дней',
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
@@ -262,6 +264,7 @@ class OrderController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'attribute' => 'rental_price_per_month',
                     'label' => 'Цена аренды за месяц',
                     'value' => function ($row) {
                         return ($row->location) ? $row->location->rental_price_per_month : "";
@@ -330,6 +333,7 @@ class OrderController extends Controller
             ->join('rents', 'rents.site_id', '=', 'sites.id')
             ->join('orders', 'orders.site_id', '=', 'sites.id')
             ->join('cities', 'orders.city_id', '=', 'cities.id')
+            ->where('rents.status', Rent::ON_MODERATION_STATUS)
             ->orderBy('rents.status', 'DESC');
 
         $dataProvider = new EloquentDataProvider($sites);

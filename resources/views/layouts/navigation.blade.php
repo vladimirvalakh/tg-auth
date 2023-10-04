@@ -10,7 +10,9 @@ use App\Models\Role;
 <nav class="navbar navbar-light bg-light  navbar-expand-md d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3  border-bottom shadow-sm">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            @if($currentRoleSlug === Role::MODERATOR_SLUG || $currentRoleSlug === Role::ARENDATOR_SLUG)
+            @if($currentRoleSlug === Role::MODERATOR_SLUG
+                || $currentRoleSlug === Role::ARENDATOR_SLUG
+                || $currentRoleSlug === Role::ADMINISTRATOR_SLUG)
                 <li class="nav-item @if (request()->routeIs('sites')) active @endif">
                     <a class="nav-link" href="{{route('sites')}}">Сайты</a>
                 </li>
@@ -20,10 +22,10 @@ use App\Models\Role;
                 <a class="nav-link" href="{{route('orders')}}">Заявки</a>
             </li>
 
-            @if($currentRoleSlug === Role::MODERATOR_SLUG)
-                <li class="nav-item @if (request()->routeIs('categories')) active @endif">
-                    <a class="nav-link" href="{{route('categories')}}">Категории</a>
-                </li>
+            @if($currentRoleSlug === Role::ADMINISTRATOR_SLUG)
+{{--                <li class="nav-item @if (request()->routeIs('categories')) active @endif">--}}
+{{--                    <a class="nav-link" href="{{route('categories')}}">Категории</a>--}}
+{{--                </li>--}}
 
                 <li class="nav-item @if (request()->routeIs('profiles')) active @endif">
                     <a class="nav-link" href="{{route('profiles')}}">Пользователи</a>

@@ -149,6 +149,8 @@ class HomeController extends Controller
             $gridData = $this->getDashboardForModeratorRole();
         } elseif ($currentRole->slug === Role::ARENDATOR_SLUG) {
             $gridData = $this->getDashboardForArendatorRole();
+        } else if ($currentRole->slug === Role::ADMINISTRATOR_SLUG) {
+            $gridData = $this->getDashboardForModeratorRole();
         } else {
             return redirect('orders');
         }
@@ -209,8 +211,10 @@ class HomeController extends Controller
             'rents.p90 as rent_p90',
             'rents.p30 as rent_p30',
             'rents.period as rent_period',
+            'cities.rental_price_per_month as rental_price_per_month'
         )->whereIn('sites.city_id', json_decode(auth()->user()->cities, true))
         ->join('rents', 'rents.site_id', '=', 'sites.id')
+        ->join('cities', 'cities.id', '=', 'sites.city_id')
         ->where('rents.status', 'В поиске');
 
         $dataProvider = new EloquentDataProvider($sites);
@@ -241,7 +245,6 @@ class HomeController extends Controller
                     ],
                 ],
                 [
-                    'attribute' => 'url',
                     'label' => 'Сайт',
                     'format' => 'html',
                     'value' => function ($row) {
@@ -250,6 +253,7 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'attribute' => 'rent_p90',
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
                         return ($row->rent_p90) ? $row->rent_p90 : '';
@@ -257,6 +261,7 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'attribute' => 'rent_p30',
                     'label' => 'Заявок 30 дней',
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
@@ -264,6 +269,7 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'attribute' => 'rental_price_per_month',
                     'label' => 'Цена аренды за месяц',
                     'value' => function ($row) {
                         return ($row->location) ? $row->location->rental_price_per_month : "";

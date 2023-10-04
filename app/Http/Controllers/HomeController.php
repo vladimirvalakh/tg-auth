@@ -64,6 +64,7 @@ class HomeController extends Controller
         $currentRole = auth()->user()->role;
 
         $viewCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+            || $currentRole->slug == Role::ARENDATOR_SLUG
             || $currentRole->slug == Role::OWNER_SLUG);
 
         if (!$viewCriteria) {

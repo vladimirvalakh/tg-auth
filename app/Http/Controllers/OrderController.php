@@ -76,7 +76,7 @@ class OrderController extends Controller
 
         return view('dashboard', [
             'dataProvider' => $dataProvider,
-            'gridData' => $gridData
+            'gridData' => $gridData,
         ]);
     }
 

@@ -38,6 +38,7 @@
             <!-- Page Content -->
             <main role="main">
                 @include('flash-message')
+                @include('profile.partials.update-cities-form')
                 {{ $slot }}
             </main>
         </div>
@@ -55,11 +56,11 @@
             }
         });
 
-        $('select').on('select2:select', function () {
+        $('select:not(#select-cities-top-form)').on('select2:select', function () {
             $('#grid_view_search_button').click();
         });
 
-        $('select').on('select2:close', function () {
+        $('select:not(#select-cities-top-form)').on('select2:close', function () {
             $('#grid_view_search_button').click();
         });
 

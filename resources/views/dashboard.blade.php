@@ -1,7 +1,20 @@
+<?php
+use App\Models\Role;
+?>
+
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                @if (auth()->user()->role && auth()->user()->role->slug === Role::OWNER_SLUG)
+                    <div class="container-fluid mt-3 mb-3">
+                        <div class="col-12 col-xl-4 pull-right">
+                            <a type="button" class="btn btn-primary" href="{{route('site.add')}}">Добавить сайт</a>
+                        </div>
+                    </div>
+
+                @endif
+
                 <div class="p-6 text-gray-900 dashboard">
                     {!! grid_view($gridData) !!}
                 </div>

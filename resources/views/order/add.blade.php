@@ -1,0 +1,55 @@
+<x-app-layout>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <form method="post" action="{{ route('order.store') }}" class="mt-6 space-y-6">
+                    @csrf
+                    @method('post')
+                    <div class="max-w-xl">
+                        <div class="form-group row">
+                            <label for="phone" class="col-sm-2 col-form-label">Телефон</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="phone" name="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="viber" class="col-sm-2 col-form-label">Whatsapp / Viber</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="viber" name="viber">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="emails" class="col-sm-2 col-form-label">Emails</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="emails" name="emails">
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <hr />
+
+                    <button class="btn btn-md btn-success" type="submit">Сохранить</button>
+
+                    @if (session('status') === 'order-added')
+                        <p
+                            x-data="{ show: true }"
+                            x-show="show"
+                            x-transition
+                            x-init="setTimeout(() => show = false, 2000)"
+                            class="text-sm text-gray-600 float-right text-success"
+                        >Сохранено</p>
+                    @endif
+
+                    <a class="btn btn-primary pull-right" href="{{url()->previous()}}"> Вернуться к списку заказов </a>
+
+                </form>
+                <hr />
+            </div>
+
+        </div>
+    </div>
+</x-app-layout>

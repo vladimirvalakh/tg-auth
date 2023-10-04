@@ -45,14 +45,17 @@ class OrderController extends Controller
     {
         $data = $request->all();
         $data['user_id'] = Auth::id();
-        $data['source'] = 'Заявка на сайте';
+        $data['source'] = 'Создано владельцем сайта';
         $data['info'] = '';
 
         Order::create($data);
 
-        $rent = Rent::where('id', $data['rent_id'])->first();
-        $rent['status'] = Rent::ON_MODERATION_STATUS;
-        $rent->save();
+        if (!empty($data['rent_id'])) {
+            $rent = Rent::where('id', $data['rent_id'])->first();
+            $rent['status'] = Rent::ON_MODERATION_STATUS;
+            $rent->save();
+        }
+
 
         return Redirect::route('sites')->with('success','Заявка успешно создана, перейдите в личный кабинет для управления.');
     }
@@ -77,6 +80,21 @@ class OrderController extends Controller
         return view('dashboard', [
             'dataProvider' => $dataProvider,
             'gridData' => $gridData,
+        ]);
+    }
+
+    public function add()
+    {
+        $currentRole = auth()->user()->role;
+
+        $updateCriteria = ($currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$updateCriteria) {
+            abort(403);
+        }
+
+        return view('order/add', [
+            'cities' => City::userCitiesList(),
         ]);
     }
 

@@ -12,6 +12,7 @@ use App\Models\Role;
         <ul class="navbar-nav mr-auto">
             @if($currentRoleSlug === Role::MODERATOR_SLUG
                 || $currentRoleSlug === Role::ARENDATOR_SLUG
+                || $currentRoleSlug === Role::OWNER_SLUG
                 || $currentRoleSlug === Role::ADMINISTRATOR_SLUG)
                 <li class="nav-item @if (request()->routeIs('sites')) active @endif">
                     <a class="nav-link" href="{{route('sites')}}">Сайты</a>

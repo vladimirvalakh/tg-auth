@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/site/{site}/view', [HomeController::class, 'siteView'])->name('site.view');
     Route::get('/site/{site}/data', [HomeController::class, 'siteData'])->name('site.data');
     Route::get('/site/{site}/edit', [HomeController::class, 'siteEdit'])->name('site.edit');
+    Route::get('/site/add', [HomeController::class, 'siteAdd'])->name('site.add');
+    Route::post('/site/store', [HomeController::class, 'siteStore'])->name('site.store');
     Route::get('/site/{site}/destroy', [HomeController::class, 'siteDestroy'])->name('site.destroy');
     Route::put('/site/{site}/update', [HomeController::class, 'siteUpdate'])->name('site.update');
     Route::post('/site/rent', [OrderController::class, 'store'])->name('order.store');
@@ -51,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/order/{order}/update', [OrderController::class, 'update'])->name('order.update');
     Route::get('/order/{order}/destroy', [OrderController::class, 'destroy'])->name('order.destroy');
     Route::get('/order/{order}/approve', [OrderController::class, 'approve'])->name('order.approve');
+    Route::get('/order/add', [OrderController::class, 'add'])->name('order.add');
 
     Route::patch('role/update', [ProfileController::class, 'roleUpdate'])->name('role.update');
     Route::patch('profile/city-update', [ProfileController::class, 'cityUpdate'])->name('profile.city.update');

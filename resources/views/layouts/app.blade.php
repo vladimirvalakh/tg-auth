@@ -38,7 +38,11 @@
             <!-- Page Content -->
             <main role="main">
                 @include('flash-message')
-                @include('profile.partials.update-cities-form')
+
+                @if (request()->routeIs('sites') || request()->routeIs('orders'))
+                    @include('profile.partials.update-cities-form')
+                @endif
+
                 {{ $slot }}
             </main>
         </div>

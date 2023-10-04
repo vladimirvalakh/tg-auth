@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Itstructure\GridView\Actions\Button;
 use Itstructure\GridView\Actions\CustomHtmlTag;
-use Itstructure\GridView\Actions\Delete;
 use Itstructure\GridView\Columns\ActionColumn;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use Carbon\Carbon;
@@ -48,7 +47,10 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+        $viewCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+            || $currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$viewCriteria) {
             abort(403);
         }
 
@@ -61,7 +63,10 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        if ($currentRole && $currentRole->slug != Role::ARENDATOR_SLUG ) {
+        $viewCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+            || $currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$viewCriteria) {
             abort(403);
         }
 
@@ -73,11 +78,74 @@ class HomeController extends Controller
         ];
     }
 
+    public function siteAdd()
+    {
+        $currentRole = auth()->user()->role;
+
+        $addCriteria = ($currentRole->slug == Role::OWNER_SLUG || $currentRole->slug == Role::MODERATOR_SLUG);
+
+        if (!$addCriteria) {
+            abort(403);
+        }
+
+
+
+        return view('site/add', [
+            'cities' => City::citiesList(),
+            'categories' => Category::categoriesList()
+        ]);
+    }
+
+    public function siteStore(Request $request)
+    {
+        $currentRole = auth()->user()->role;
+
+        $updateCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+            || $currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$updateCriteria) {
+            abort(403);
+        }
+
+        $site = Site::create([
+            'cat_id' => $request->input('cat_id'),
+            'url' => $request->input('url'),
+            'city_id' => $request->input('city_id'),
+            'address' => $request->input('address'),
+            'phone1' => $request->input('phone1'),
+            'phone2' => $request->input('phone2'),
+            'email' => $request->input('email'),
+            'email2' => $request->input('email2'),
+            'koeff' => $request->input('koeff'),
+            'mail_domain' => $request->input('mail_domain'),
+            'YmetricaId' => $request->input('YmetricaId'),
+            'VENYOOId' => $request->input('VENYOOId'),
+            'tgchatid' => $request->input('tgchatid'),
+            'GMiframe1' => $request->input('GMiframe1'),
+            'GMiframe2' => $request->input('GMiframe2'),
+            'areas' => $request->input('areas'),
+            'crm' => $request->input('crm'),
+            'crm_pass' => $request->input('crm_pass'),
+            'crm_u' => $request->input('crm_u'),
+            'prf' => $request->input('prf'),
+        ]);
+
+        Rent::create([
+            'site_id' => $site->id,
+            'status' => Rent::IN_SEARCH_STATUS
+        ]);
+
+        return Redirect::route('sites')->with('success','Сайт добавлен.');
+    }
+
     public function siteEdit(Site $site)
     {
         $currentRole = auth()->user()->role;
 
-        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+        $updateCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+            || $currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$updateCriteria) {
             abort(403);
         }
 
@@ -95,7 +163,10 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+        $updateCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+        || $currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$updateCriteria) {
             abort(403);
         }
 
@@ -122,14 +193,17 @@ class HomeController extends Controller
             'prf' => $request->input('prf'),
         ]);
 
-        return Redirect::route('sites')->with('status', 'site-updated');
+        return Redirect::route('sites')->with('success','Сайт обновлён.');
     }
 
     public function siteDestroy(Site $site)
     {
         $currentRole = auth()->user()->role;
 
-        if ($currentRole && $currentRole->slug != Role::MODERATOR_SLUG ) {
+        $deleteCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
+            || $currentRole->slug == Role::OWNER_SLUG);
+
+        if (!$deleteCriteria) {
             abort(403);
         }
 
@@ -150,6 +224,8 @@ class HomeController extends Controller
         } elseif ($currentRole->slug === Role::ARENDATOR_SLUG) {
             $gridData = $this->getDashboardForArendatorRole();
         } else if ($currentRole->slug === Role::ADMINISTRATOR_SLUG) {
+            $gridData = $this->getDashboardForModeratorRole();
+        } else if ($currentRole->slug === Role::OWNER_SLUG) {
             $gridData = $this->getDashboardForModeratorRole();
         } else {
             return redirect('orders');

@@ -84,10 +84,10 @@ class OrderController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        if (($currentRole->slug == Role::ARENDATOR_SLUG && $order->user_id != Auth::id())
-            && $currentRole->slug != Role::MODERATOR_SLUG
-            && $currentRole->slug != Role::MANAGER_SLUG
-        ) {
+        $updateCriteria = ($currentRole->slug == Role::ARENDATOR_SLUG && $order->user_id == Auth::id())
+            || $currentRole->slug == Role::MODERATOR_SLUG;
+
+        if (!$updateCriteria) {
             abort(403);
         }
 
@@ -116,7 +116,11 @@ class OrderController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        if (($currentRole->slug == Role::ARENDATOR_SLUG && $order->user_id != Auth::id()) || $currentRole->slug != Role::MODERATOR_SLUG) {
+        $deleteCriteria = ($currentRole->slug == Role::ARENDATOR_SLUG && $order->user_id == Auth::id())
+            || $currentRole->slug == Role::MODERATOR_SLUG
+            || ($currentRole->slug == Role::OWNER_SLUG && $order->site->rent->status != Rent::ON_RENT_STATUS);
+
+        if (!$deleteCriteria) {
             abort(403);
         }
 
@@ -134,10 +138,10 @@ class OrderController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        if (($currentRole->slug == Role::ARENDATOR_SLUG && $order->user_id != Auth::id())
-            && $currentRole->slug != Role::MODERATOR_SLUG
-            && $currentRole->slug != Role::MANAGER_SLUG
-        ) {
+        $updateCriteria = ($currentRole->slug == Role::ARENDATOR_SLUG && $order->user_id == Auth::id())
+            || $currentRole->slug == Role::MODERATOR_SLUG;
+
+        if (!$updateCriteria) {
             abort(403);
         }
 
@@ -725,6 +729,23 @@ class OrderController extends Controller
                         return ($row->rent_period) ? $row->rent_period : "";
                     },
                     'filter' => false,
+                ],
+                [
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class,
+                    'actionTypes' => [
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                if ($data->rent_status != Rent::ON_RENT_STATUS) {
+                                    return '/order/' . $data->order_id . '/destroy';
+                                } else {
+                                    return 'forbidden';
+                                }
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger">Удалить</button>',
+                        ],
+                    ],
                 ],
             ],
         ];

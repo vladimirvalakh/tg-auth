@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Site;
 
 /**
  * Class Order
@@ -38,6 +39,10 @@ class Order extends Model
 
     public function users() {
         return $this->hasMany('App\User', 'user_id');
+    }
+
+    public function site() {
+        return $this->belongsTo('App\Models\Site', 'site_id');
     }
 
 }

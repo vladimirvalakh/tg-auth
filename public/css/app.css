@@ -15,3 +15,21 @@
 .dashboard table {
     overflow-x: scroll;
 }
+
+#account_navbar_menu {
+    position: relative;
+}
+
+#account_navbar_menu a {
+    text-align: end;
+}
+
+#account_navbar_menu .account_role {
+    width: 300px;
+    font-size: 14px;
+    color: #a5a4a4;
+    font-family: "Arial";
+    text-align: end;
+    margin-top: -12px;
+    margin-right: 25px;
+}

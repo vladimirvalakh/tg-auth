@@ -238,6 +238,11 @@ class OrderController extends Controller
                     'label' => 'Срок аренды до',
                     'filter' => false,
                 ],
+//                [
+//                    'attribute' => 'source',
+//                    'label' => 'Источник заявок',
+//                    'filter' => false,
+//                ],
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
@@ -250,11 +255,6 @@ class OrderController extends Controller
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
                     },
-                    'filter' => false,
-                ],
-                [
-                    'attribute' => 'source',
-                    'label' => 'Источник заявок',
                     'filter' => false,
                 ],
                 [
@@ -395,6 +395,11 @@ class OrderController extends Controller
                     'label' => 'Срок аренды до',
                     'filter' => false,
                 ],
+//                [
+//                    'attribute' => 'source',
+//                    'label' => 'Источник заявок',
+//                    'filter' => false,
+//                ],
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
@@ -407,11 +412,6 @@ class OrderController extends Controller
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
                     },
-                    'filter' => false,
-                ],
-                [
-                    'attribute' => 'source',
-                    'label' => 'Источник заявок',
                     'filter' => false,
                 ],
                 [
@@ -556,6 +556,11 @@ class OrderController extends Controller
                     'label' => 'Срок аренды до',
                     'filter' => false,
                 ],
+//                [
+//                    'attribute' => 'source',
+//                    'label' => 'Источник заявок',
+//                    'filter' => false,
+//                ],
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
@@ -568,11 +573,6 @@ class OrderController extends Controller
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
                     },
-                    'filter' => false,
-                ],
-                [
-                    'attribute' => 'source',
-                    'label' => 'Источник заявок',
                     'filter' => false,
                 ],
                 [
@@ -693,6 +693,11 @@ class OrderController extends Controller
                     'label' => 'Срок аренды до',
                     'filter' => false,
                 ],
+//                [
+//                    'attribute' => 'source',
+//                    'label' => 'Источник заявок',
+//                    'filter' => false,
+//                ],
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
@@ -705,11 +710,6 @@ class OrderController extends Controller
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
                     },
-                    'filter' => false,
-                ],
-                [
-                    'attribute' => 'source',
-                    'label' => 'Источник заявок',
                     'filter' => false,
                 ],
                 [
@@ -823,6 +823,11 @@ class OrderController extends Controller
                     'label' => 'Срок аренды до',
                     'filter' => false,
                 ],
+//                [
+//                    'attribute' => 'source',
+//                    'label' => 'Источник заявок',
+//                    'filter' => false,
+//                ],
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
@@ -835,11 +840,6 @@ class OrderController extends Controller
                     'value' => function ($row) {
                         return ($row->rent_p30) ? $row->rent_p30 : '';
                     },
-                    'filter' => false,
-                ],
-                [
-                    'attribute' => 'source',
-                    'label' => 'Источник заявок',
                     'filter' => false,
                 ],
                 [

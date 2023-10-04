@@ -35,9 +35,9 @@ use App\Models\Role;
             @endif
         </ul>
 
-        <ul class="navbar-nav  ">
+        <ul class="navbar-nav">
             @auth
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" id="account_navbar_menu">
                 <a class="nav-link dropdown-toggle"
                    href="#" id="navbarDropdown"
                    role="button"
@@ -46,6 +46,10 @@ use App\Models\Role;
                    aria-expanded="false">
                      {{ Auth::user()->name }}
                 </a>
+                @if (auth()->user()->role)
+                    <div class="account_role">{{auth()->user()->role->name}}</div>
+                @endif
+
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="{{route('profile.edit')}}">Профиль</a>
                     <div class="dropdown-divider"></div>

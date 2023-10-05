@@ -67,4 +67,25 @@ class City extends Model
     {
         return DB::table('cities')->orderBy('subject_rf')->pluck('subject_rf', 'subject_rf')->toArray();
     }
+
+    public static function regionsList(): ?array
+    {
+        return DB::table('cities')
+            ->orderBy('id')
+            ->pluck('subject_rf', 'id')
+            ->toArray();
+    }
+
+    public static function citiesfListByRegionByCityId(int $cityId): ?array
+    {
+        $region = DB::table('cities')->where('id', $cityId)
+            ->select('subject_rf')
+            ->first();
+
+        return DB::table('cities')
+            ->where('subject_rf', $region->subject_rf)
+            ->orderBy('city')
+            ->pluck('city', 'id')
+            ->toArray();
+    }
 }

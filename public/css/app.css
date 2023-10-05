@@ -41,4 +41,9 @@
 
 #select-cities-form .submit-button {
     margin-left: 10px;
+    margin-top: 45px;
+}
+
+#select-region-top-form {
+    height: 40px;
 }

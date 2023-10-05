@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
@@ -54,6 +55,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/order/{order}/destroy', [OrderController::class, 'destroy'])->name('order.destroy');
     Route::get('/order/{order}/approve', [OrderController::class, 'approve'])->name('order.approve');
     Route::get('/order/add', [OrderController::class, 'add'])->name('order.add');
+
+    Route::get('/region/{city_id}/cities', [LocationController::class, 'getRegionCities'])->name('region.cities');
 
     Route::patch('role/update', [ProfileController::class, 'roleUpdate'])->name('role.update');
     Route::patch('profile/city-update', [ProfileController::class, 'cityUpdate'])->name('profile.city.update');

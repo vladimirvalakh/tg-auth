@@ -1,3 +1,7 @@
+<?php
+use App\Models\Role;
+?>
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -39,8 +43,10 @@
             <main role="main">
                 @include('flash-message')
 
-                @if (request()->routeIs('sites') || request()->routeIs('orders'))
-                    @include('profile.partials.update-cities-form')
+                @if (auth()->user()->role && auth()->user()->role->slug === Role::ARENDATOR_SLUG)
+                    @if (request()->routeIs('sites') || request()->routeIs('orders'))
+                        @include('profile.partials.update-cities-form')
+                    @endif
                 @endif
 
                 {{ $slot }}
@@ -60,11 +66,11 @@
             }
         });
 
-        $('select:not(#select-cities-top-form)').on('select2:select', function () {
+        $('select:not(#select-cities-top-form,#select-region-top-form)').on('select2:select', function () {
             $('#grid_view_search_button').click();
         });
 
-        $('select:not(#select-cities-top-form)').on('select2:close', function () {
+        $('select:not(#select-cities-top-form,#select-region-top-form)').on('select2:close', function () {
             $('#grid_view_search_button').click();
         });
 

@@ -66,6 +66,8 @@ use App\Models\Role;
     });
     $('.rent_p30').append('  <button type="button" class="btn btn-sm btn-outline-danger show-p30">Посмотреть заявки</button>');
 
+    $('.last_10_orders').append('  <button type="button" class="btn btn-block btn-sm btn-outline-danger show-last-10-orders">Показать</button>');
+
 
     $('.show-p30').click(function(event){
         event.preventDefault();
@@ -81,5 +83,21 @@ use App\Models\Role;
             $("#site-get-30-days-orders-modal-content").modal('show');
         };
     });
+
+    $('.show-last-10-orders').click(function(event){
+        event.preventDefault();
+        let site_id = $(this).parent('.last_10_orders').data('site-id');
+
+        let url = '/site/'+site_id+'/show-last-10-orders';
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.send();
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            $("#site-get-30-days-orders-modal-content").find('.modal-content').html(data);
+            $("#site-get-30-days-orders-modal-content").modal('show');
+        };
+    });
+
 
 </script>

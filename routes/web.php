@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/site/{site}/update', [HomeController::class, 'siteUpdate'])->name('site.update');
     Route::post('/site/rent', [OrderController::class, 'store'])->name('order.store');
     Route::get('/site/{site}/get_30days_orders', [ModalController::class, 'get30daysOrders'])->name('site.get_30days_orders');
+    Route::get('/site/{site}/show-last-10-orders', [ModalController::class, 'showLast10orders'])->name('site.show_last_10_orders');
 
     Route::get('/category/{category}/view', [CategoryController::class, 'view'])->name('category.view');
     Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');

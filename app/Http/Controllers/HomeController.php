@@ -332,9 +332,9 @@ class HomeController extends Controller
                 [
                     'attribute' => 'rent_p90',
                     'label' => 'Заявок 3 мес',
-                    'value' => function ($row) {
-                        $value = $row->getCountOrdersFor91days();
-                        return "<span class='rent_p90' data-site-id='". $row->id ."'>" . $value . "</span>";
+                    'value' => function ($data) {
+                        $value = $data->getCountOrdersFor91days();
+                        return "<span class='rent_p90' data-site-id='". $data->site_id ."'>" . $value . "</span>";
                     },
                     'filter' => false,
                     'format' => 'html',
@@ -342,9 +342,17 @@ class HomeController extends Controller
                 [
                     'attribute' => 'rent_p30',
                     'label' => 'Заявок 30 дней',
-                    'value' => function ($row) {
-                        $value = $row->getCountOrdersFor30days();
-                        return "<span class='rent_p30' data-site-id='". $row->id . "'>" . $value . "</span>";
+                    'value' => function ($data) {
+                        $value = $data->getCountOrdersFor30days();
+                        return "<span class='rent_p30' data-site-id='". $data->site_id . "'>" . $value . "</span>";
+                    },
+                    'filter' => false,
+                    'format' => 'html',
+                ],
+                [
+                    'label' => 'Последние 10 заявок',
+                    'value' => function ($data) {
+                        return "<span class='last_10_orders' data-site-id='". $data->site_id . "'></span>";
                     },
                     'filter' => false,
                     'format' => 'html',

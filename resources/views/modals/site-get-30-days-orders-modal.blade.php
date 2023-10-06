@@ -9,4 +9,8 @@
     .text-xl-right{
         display: none;
     }
+
+    #site-get-30-days-orders-modal-content .pagination {
+        display: none;
+    }
 </style>

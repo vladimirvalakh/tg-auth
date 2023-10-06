@@ -88,6 +88,7 @@ class ModalController extends Controller
                         return $row->order_info;
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
             ],
         ];
@@ -173,6 +174,7 @@ class ModalController extends Controller
                         return $row->order_info;
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
             ],
         ];

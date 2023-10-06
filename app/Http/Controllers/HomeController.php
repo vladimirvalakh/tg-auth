@@ -333,17 +333,21 @@ class HomeController extends Controller
                     'attribute' => 'rent_p90',
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
-                        return ($row->rent_p90) ? $row->rent_p90 : '';
+                        $value = $row->getCountOrdersFor91days();
+                        return "<span class='rent_p90' data-site-id='". $row->id ."'>" . $value . "</span>";
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
                 [
                     'attribute' => 'rent_p30',
                     'label' => 'Заявок 30 дней',
                     'value' => function ($row) {
-                        return ($row->rent_p30) ? $row->rent_p30 : '';
+                        $value = $row->getCountOrdersFor30days();
+                        return "<span class='rent_p30' data-site-id='". $row->id . "'>" . $value . "</span>";
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
                 [
                     'attribute' => 'rental_price_per_month',
@@ -476,7 +480,6 @@ class HomeController extends Controller
                     },
                     'filter' => false,
                     'format' => 'html',
-//                    'sort' => 'rent_p30'
                 ],
                 [
                     'label' => 'Цена за лид',
@@ -599,16 +602,20 @@ class HomeController extends Controller
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->p90 : '';
+                        $value = $row->getCountOrdersFor91days();
+                        return "<span class='rent_p90' data-site-id='". $row->id ."'>" . $value . "</span>";
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
                 [
                     'label' => 'Заявок 30 дней',
                     'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->p30 : '';
+                        $value = $row->getCountOrdersFor30days();
+                        return "<span class='rent_p30' data-site-id='". $row->id . "'>" . $value . "</span>";
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
                 [
                     'label' => 'Цена за лид',

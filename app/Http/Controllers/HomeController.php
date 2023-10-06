@@ -462,16 +462,21 @@ class HomeController extends Controller
                 [
                     'label' => 'Заявок 3 мес',
                     'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->p90 : '';
+                        $value = $row->getCountOrdersFor91days();
+                        return "<span class='rent_p90' data-site-id='". $row->id ."'>" . $value . "</span>";
                     },
                     'filter' => false,
+                    'format' => 'html',
                 ],
                 [
                     'label' => 'Заявок 30 дней',
                     'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->p30 : '';
+                        $value = $row->getCountOrdersFor30days();
+                        return "<span class='rent_p30' data-site-id='". $row->id . "'>" . $value . "</span>";
                     },
                     'filter' => false,
+                    'format' => 'html',
+//                    'sort' => 'rent_p30'
                 ],
                 [
                     'label' => 'Цена за лид',

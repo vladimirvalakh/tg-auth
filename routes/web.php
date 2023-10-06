@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ModalController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/site/{site}/destroy', [HomeController::class, 'siteDestroy'])->name('site.destroy');
     Route::put('/site/{site}/update', [HomeController::class, 'siteUpdate'])->name('site.update');
     Route::post('/site/rent', [OrderController::class, 'store'])->name('order.store');
+    Route::get('/site/{site}/get_30days_orders', [ModalController::class, 'get30daysOrders'])->name('site.get_30days_orders');
 
     Route::get('/category/{category}/view', [CategoryController::class, 'view'])->name('category.view');
     Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');

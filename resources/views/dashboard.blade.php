@@ -31,6 +31,7 @@ use App\Models\Role;
 
 
 @include('modals.rent-site-modal')
+@include('modals.site-get-30-days-orders-modal')
 
 <script>
     let date_options = {
@@ -57,5 +58,28 @@ use App\Models\Role;
             $("#rent-site-modal").find('.period_date').text(data.period_date);
             $("#rent-site-modal").modal('show');
         };
-    })
+    });
+
+
+    $('.rent_p30').parent('td').css({
+        'width':'190px',
+    });
+    $('.rent_p30').append('  <button type="button" class="btn btn-sm btn-outline-danger show-p30">Посмотреть заявки</button>');
+
+
+    $('.show-p30').click(function(event){
+        event.preventDefault();
+        let site_id = $(this).parent('.rent_p30').data('site-id');
+
+        let url = '/site/'+site_id+'/get_30days_orders';
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.send();
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            $("#site-get-30-days-orders-modal-content").find('.modal-content').html(data);
+            $("#site-get-30-days-orders-modal-content").modal('show');
+        };
+    });
+
 </script>

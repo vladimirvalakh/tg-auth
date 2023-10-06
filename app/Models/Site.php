@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
@@ -81,5 +82,51 @@ class Site extends Model
     public static function prfList(): Array
     {
         return DB::table('sites')->pluck('prf', 'prf')->toArray();
+    }
+
+    public function getCountOrdersFor30days() {
+        $sites =  Site::select(
+            'sites.id as site_id',
+            'sites.city_id as sites_city_id',
+            'orders.city_id as city_id',
+            'orders.rental_period_up_to',
+            'orders.id as order_id',
+            'orders.date as order_date',
+            'orders.phone as order_phone',
+            'orders.info as order_info',
+            'cities.id as cities_id',
+            'cities.price_per_lead as price_per_lead',
+            'url',
+        )
+            ->join('orders', 'orders.site_id', '=', 'sites.id')
+            ->join('cities', 'orders.city_id', '=', 'cities.id')
+            ->where('sites.id', $this->id)
+            ->where('orders.date', '>=', Carbon::now()->subDays(30))
+            ->orderBy('orders.date', 'DESC');
+
+        return $sites->count();
+    }
+
+    public function getCountOrdersFor91days() {
+        $sites =  Site::select(
+            'sites.id as site_id',
+            'sites.city_id as sites_city_id',
+            'orders.city_id as city_id',
+            'orders.rental_period_up_to',
+            'orders.id as order_id',
+            'orders.date as order_date',
+            'orders.phone as order_phone',
+            'orders.info as order_info',
+            'cities.id as cities_id',
+            'cities.price_per_lead as price_per_lead',
+            'url',
+        )
+            ->join('orders', 'orders.site_id', '=', 'sites.id')
+            ->join('cities', 'orders.city_id', '=', 'cities.id')
+            ->where('sites.id', $this->id)
+            ->where('orders.date', '>=', Carbon::now()->subDays(91))
+            ->orderBy('orders.date', 'DESC');
+
+        return $sites->count();
     }
 }

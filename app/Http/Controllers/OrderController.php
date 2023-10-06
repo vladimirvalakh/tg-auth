@@ -46,6 +46,7 @@ class OrderController extends Controller
         $data = $request->all();
         $data['user_id'] = Auth::id();
         $data['source'] = 'Создано владельцем сайта';
+        $data['order_status'] = Order::ON_MODERATION_STATUS;
         $data['info'] = '';
 
         Order::create($data);
@@ -122,6 +123,9 @@ class OrderController extends Controller
         if ($currentRole->slug != Role::MODERATOR_SLUG) {
             abort(403);
         }
+
+        $order['order_status'] = Order::ON_RENT_STATUS;
+        $order->save();
 
         $rent = Rent::where('site_id', $order['site_id'])->first();
         $rent['status'] = Rent::ON_RENT_STATUS;
@@ -339,6 +343,7 @@ class OrderController extends Controller
             'orders.rental_period_up_to',
             'orders.id as order_id',
             'orders.source',
+            'orders.order_status as order_status',
             'cities.id as cities_id',
             'cities.price_per_lead as price_per_lead',
             'url',
@@ -351,7 +356,7 @@ class OrderController extends Controller
             ->join('rents', 'rents.site_id', '=', 'sites.id')
             ->join('orders', 'orders.site_id', '=', 'sites.id')
             ->join('cities', 'orders.city_id', '=', 'cities.id')
-            ->where('rents.status', Rent::ON_MODERATION_STATUS)
+            ->where('order_status', Order::ON_MODERATION_STATUS)
             ->orderBy('rents.status', 'DESC');
 
         $dataProvider = new EloquentDataProvider($sites);

@@ -19,9 +19,12 @@ use App\Models\Role;
                 </li>
             @endif
 
-            <li class="nav-item @if (request()->routeIs('orders')) active @endif">
-                <a class="nav-link" href="{{route('orders')}}">Заявки</a>
-            </li>
+            @if($currentRoleSlug === Role::MODERATOR_SLUG
+                || $currentRoleSlug === Role::ARENDATOR_SLUG)
+                <li class="nav-item @if (request()->routeIs('orders')) active @endif">
+                    <a class="nav-link" href="{{route('orders')}}">Заявки</a>
+                </li>
+            @endif
 
             @if($currentRoleSlug === Role::ADMINISTRATOR_SLUG)
 {{--                <li class="nav-item @if (request()->routeIs('categories')) active @endif">--}}

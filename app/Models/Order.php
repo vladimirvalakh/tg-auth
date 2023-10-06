@@ -19,6 +19,10 @@ use App\Models\Site;
  */
 class Order extends Model
 {
+    public const IN_SEARCH_STATUS = 'В поиске';
+    public const ON_RENT_STATUS = 'В аренде';
+    public const ON_MODERATION_STATUS = 'На модерации';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -31,6 +35,7 @@ class Order extends Model
         'site_id',
         'user_id',
         'status',
+        'order_status',
         'emails',
         'viber',
         'source',

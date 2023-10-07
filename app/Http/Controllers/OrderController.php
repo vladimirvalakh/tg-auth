@@ -316,14 +316,14 @@ class OrderController extends Controller
                             'url' => function ($data) {
                                 return '/order/' . $data->order_id . '/edit';
                             },
-                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить</button>',
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить контакты</button>',
                         ],
                         [
                             'class' => CustomHtmlTag::class,
                             'url' => function ($data) {
                                 return '/order/' . $data->order_id . '/destroy';
                             },
-                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger">Удалить</button>',
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger delete-order">Прекратить аренду</button>',
                         ],
                     ],
                 ],

@@ -32,6 +32,7 @@ use App\Models\Role;
 
 @include('modals.rent-site-modal')
 @include('modals.site-get-30-days-orders-modal')
+@include('modals.delete-order-modal')
 
 <script>
     let date_options = {
@@ -99,5 +100,11 @@ use App\Models\Role;
         };
     });
 
+    $('.delete-order').click(function(event){
+        event.preventDefault();
+        let url = $(this).parent().attr('href');
+        $("#delete-order-modal").find('.delete-form').attr('action', url);
+        $("#delete-order-modal").modal('show');
+    });
 
 </script>

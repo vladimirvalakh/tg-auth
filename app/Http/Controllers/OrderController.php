@@ -58,7 +58,7 @@ class OrderController extends Controller
         }
 
 
-        return Redirect::route('sites')->with('success','Заявка успешно создана, перейдите в личный кабинет для управления.');
+        return Redirect::route('sites')->with('success','Заявка успешно создана, перейдите в <a href="'. route('orders') . '">личный кабинет</a> для управления.');
     }
 
     public function list()

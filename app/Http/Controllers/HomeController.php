@@ -216,7 +216,6 @@ class HomeController extends Controller
 
     public function sites()
     {
-
         $currentRole = auth()->user()->role;
         $dataProvider = new EloquentDataProvider(Site::query());
 
@@ -513,7 +512,7 @@ class HomeController extends Controller
                             'url' => function ($data) {
                                 return '/site/' . $data->id . '/edit';
                             },
-                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить</button>',
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Редактировать</button>',
                         ],
                         [
                             'class' => CustomHtmlTag::class,
@@ -649,7 +648,7 @@ class HomeController extends Controller
                             'url' => function ($data) {
                                 return '/site/' . $data->id . '/edit';
                             },
-                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить</button>',
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Редактировать</button>',
                         ],
                         [
                             'class' => CustomHtmlTag::class,

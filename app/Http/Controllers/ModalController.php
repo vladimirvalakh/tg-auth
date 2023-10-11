@@ -17,6 +17,8 @@ class ModalController extends Controller
 {
     public function showLast10orders(int $siteId)
     {
+        $limit = 10;
+
         $sites =  Site::select(
             'sites.id as site_id',
             'sites.city_id as sites_city_id',
@@ -33,8 +35,9 @@ class ModalController extends Controller
             ->join('orders', 'orders.site_id', '=', 'sites.id')
             ->join('cities', 'orders.city_id', '=', 'cities.id')
             ->where('sites.id', $siteId)
-            ->limit(2)
-            ->orderBy('orders.date', 'DESC');
+            ->orderBy('orders.date', 'DESC')
+            ->limit($limit)
+            ->get();
 
         $dataProvider = new EloquentDataProvider($sites);
 
@@ -43,7 +46,7 @@ class ModalController extends Controller
             'paginatorOptions' => [
                 'pageName' => 'p'
             ],
-            'rowsPerPage' => 10,
+            //'rowsPerPage' => 10,
             'use_filters' => false,
             'strictFilters' => true,
             'useSendButtonAnyway' => false,

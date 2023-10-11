@@ -21,10 +21,10 @@ use App\Models\Role;
 
             @if($currentRoleSlug === Role::ARENDATOR_SLUG)
                 <li class="nav-item @if (request()->routeIs('sites')) active @endif">
-                    <a class="nav-link" href="{{route('sites')}}">Сайты</a>
+                    <a class="nav-link" href="{{route('sites')}}">Все сайты</a>
                 </li>
                 <li class="nav-item @if (request()->routeIs('orders')) active @endif">
-                    <a class="nav-link" href="{{route('orders')}}">Заявки</a>
+                    <a class="nav-link" href="{{route('orders')}}">Мои сайты</a>
                 </li>
             @endif
 

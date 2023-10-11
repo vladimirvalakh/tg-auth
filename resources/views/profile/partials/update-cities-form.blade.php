@@ -15,6 +15,7 @@ $regions = City::regionsList();
                     <div class="col col-md-5">
                         <label for="select-region-top-form" class="form-label align-text-middle">Выберите регион</label>
                         <select style="height:1.8em;" name="regions[]" class="form-control flex-fill form-control mb-2 mr-sm-2" id="select-region-top-form">
+                            <option > -- ничего не выбрано -- </option>
                             @foreach($regions as $key => $region)
                                 @if (!auth()->user()->cities)
                                     <option value="{{ $key }}">{{ $region }}</option>
@@ -50,6 +51,11 @@ $regions = City::regionsList();
 </section>
 
 <script>
+
+    if ($('#select-region-top-form').val() == "-- ничего не выбрано --") {
+        $('#select-cities-top-form').children().remove().end();
+    }
+
     $(function(){
         $('select option').filter(function(){
             return ($(this).val().trim()=="" && $(this).text().trim()=="");

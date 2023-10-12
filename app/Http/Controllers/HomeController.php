@@ -314,11 +314,7 @@ class HomeController extends Controller
                     'value' => function ($row) {
                         return ($row->location) ? $row->location->city : "";
                     },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'city_id', //for some reason works LIKE
-                        'data' => City::userCitiesList(),
-                    ],
+                    'filter' => false,
                 ],
                 [
                     'label' => 'Сайт',

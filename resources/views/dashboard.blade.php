@@ -15,7 +15,7 @@ use App\Models\Role;
 
                 @endif
 
-                <div class="p-6 text-gray-900 dashboard">
+                <div class="p-6 text-gray-900 dashboard grid-dashboard">
                     {!! grid_view($gridData) !!}
                 </div>
             </div>
@@ -41,6 +41,12 @@ use App\Models\Role;
         day: 'numeric',
         timezone: 'UTC'
     };
+
+    let countRecords = $('.grid-dashboard').find('table').find('tr').length - 3;
+
+    if (countRecords < 1) {
+        $('.grid-dashboard').html('<div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 offset-lg-2 offset-md-1 float-md-center"><div class="jumbotron text-center">Нет доступных для аренды сайтов</div></div>');
+    }
 
     $('.rent-site-modal-button').click(function(event){
         event.preventDefault();

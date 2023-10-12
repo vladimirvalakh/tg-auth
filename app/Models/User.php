@@ -22,6 +22,7 @@ use function Monolog\getName;
  * @property string $username
  * @property string $auth_key
  * @property Role $role
+ * @property int $first_screen
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  */
@@ -40,6 +41,7 @@ class User extends Authenticatable
         'password',
         'role_id',
         'cities',
+        'first_screen',
     ];
 
     /**

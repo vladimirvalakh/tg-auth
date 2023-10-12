@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/settings', [ProfileController::class, 'settings'])->name('profile.settings');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('profile/first-screen-update', [ProfileController::class, 'firstScreenUpdate'])->name('profile.first.screen.update');
 
     Route::get('/orders', [OrderController::class, 'list'])->name('orders');
     Route::get('/order/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');

@@ -139,6 +139,18 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
+    public function firstScreenUpdate(Request $request): RedirectResponse
+    {
+        $user = User::findOrFail(Auth::id());
+        $user->first_screen = $request->get('first_screen');
+        $user->save();
+
+        return Redirect::route('sites');
+    }
+
+    /**
+     * Update the user's profile information.
+     */
     public function cityUpdate(Request $request): RedirectResponse
     {
         $user = User::findOrFail(Auth::id());

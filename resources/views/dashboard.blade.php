@@ -27,6 +27,9 @@ use App\Models\Role;
     .dashboard table {
         overflow: scroll;
     }
+    .info-html {
+        width: 160px!important;
+    }
 </style>
 
 

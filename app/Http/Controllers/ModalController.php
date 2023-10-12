@@ -88,18 +88,17 @@ class ModalController extends Controller
                 [
                     'label' => 'Текст заявки',
                     'value' => function ($row) {
-                        return $row->order_info;
+                        return $this->hidePhonesInText($row->order_info, $row->order_phone);
                     },
                     'filter' => false,
                     'format' => 'html',
+                    'htmlAttributes' => [
+                        'width' => '12'
+                    ],
                 ],
             ],
         ];
 
-        //$count = $sites->count();
-
-        //var_dump($count);
-        //die();
 
         return response()->json(grid_view($gridDataModal), Response::HTTP_OK);
     }
@@ -174,19 +173,22 @@ class ModalController extends Controller
                 [
                     'label' => 'Текст заявки',
                     'value' => function ($row) {
-                        return $row->order_info;
+                        return $this->hidePhonesInText($row->order_info, $row->order_phone);
                     },
                     'filter' => false,
                     'format' => 'html',
+
                 ],
             ],
         ];
 
-        //$count = $sites->count();
-
-        //var_dump($count);
-        //die();
-
         return response()->json(grid_view($gridDataModal), Response::HTTP_OK);
+    }
+
+    private function hidePhonesInText($string, $phone): array|string|null
+    {
+        $phone = substr( $phone, 2);
+        $html =  str_replace($phone, Str::mask($phone, '*', 1, -4) , $string);
+        return "<div class='info-html'>" . $html . "</div>";
     }
 }

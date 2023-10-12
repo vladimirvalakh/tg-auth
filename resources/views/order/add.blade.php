@@ -7,24 +7,24 @@
                     @method('post')
                     <div class="max-w-xl">
                         <div class="form-group row">
-                            <label for="phone" class="col-sm-2 col-form-label">Телефон</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="phone" name="phone">
+                            <label for="phone" class="col-sm-4 col-form-label">Телефон</label>
+                            <div class="col-sm-8">
+                                <input required type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  class="form-control" id="phone" name="phone">
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="viber" class="col-sm-2 col-form-label">Whatsapp / Viber</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="viber" name="viber">
+                            <label for="viber" class="col-sm-4 col-form-label">Whatsapp / Viber</label>
+                            <div class="col-sm-8">
+                                <input type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control" id="viber" name="viber">
                             </div>
                         </div>
 
 
                         <div class="form-group row">
-                            <label for="emails" class="col-sm-2 col-form-label">Emails</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="emails" name="emails">
+                            <label for="emails" class="col-sm-4 col-form-label">Email</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="emails" name="emails">
                             </div>
                         </div>
 

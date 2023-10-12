@@ -7,24 +7,24 @@
                     @method('put')
                     <div class="max-w-xl">
                         <div class="form-group row">
-                            <label for="phone" class="col-sm-2 col-form-label">Телефон</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="phone" name="phone" value="{{ old('phone', $order->phone) }}">
+                            <label for="phone" class="col-sm-4 col-form-label">Телефон (в формате 888 888 8888)</label>
+                            <div class="col-sm-8">
+                                <input type="text" required placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control" id="phone" name="phone" value="{{ old('phone', $order->phone) }}">
                             </div>
                         </div>
 
                         <div class="form-group row">
-                            <label for="viber" class="col-sm-2 col-form-label">Whatsapp / Viber</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="viber" name="viber" value="{{ old('viber', $order->viber) }}">
+                            <label for="viber" class="col-sm-4 col-form-label">Whatsapp / Viber (в формате 888 888 8888)</label>
+                            <div class="col-sm-8">
+                                <input type="tel" placeholder="Введите номер Whatsapp / Viber в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control" id="viber" name="viber" value="{{ old('viber', $order->viber) }}">
                             </div>
                         </div>
 
 
                         <div class="form-group row">
-                            <label for="emails" class="col-sm-2 col-form-label">Emails</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="emails" name="emails" value="{{ old('emails', $order->emails) }}">
+                            <label for="emails" class="col-sm-4 col-form-label">Email</label>
+                            <div class="col-sm-8">
+                                <input type="email" class="form-control" id="emails" name="emails" value="{{ old('emails', $order->emails) }}">
                             </div>
                         </div>
 

@@ -22,18 +22,18 @@
 
 
                     <div class="form-group">
-                        <x-input-label for="phone" value="3. Введите телефон на сайт" />
-                        <x-text-input id="phone" name="phone" type="text" required class="form-control mt-1 block w-full" />
+                        <x-input-label for="phone" value="3. Введите телефон на сайт в формате 888 888 8888" />
+                        <x-text-input id="phone" name="phone" type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  required class="form-control mt-1 block w-full" />
                     </div>
 
                     <div class="form-group">
-                        <x-input-label for="viber" value="Вацап/вайбер для получения заявок" />
-                        <x-text-input id="viber" name="viber" type="text" class="form-control mt-1 block w-full" />
+                        <x-input-label for="viber" value="Вацап/вайбер для получения заявок в формате 888 888 8888" />
+                        <x-text-input id="viber" name="viber" type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control mt-1 block w-full" />
                     </div>
 
                     <div class="form-group">
-                        <x-input-label for="emails" value="e-mail для получения заявок (если несколько, через запятую)" />
-                        <x-text-input id="emails" name="emails" type="text" class="form-control mt-1 block w-full" />
+                        <x-input-label for="emails" value="e-mail для получения заявок" />
+                        <x-text-input id="emails" name="emails" type="email" class="form-control mt-1 block w-full" />
                     </div>
 
                     <p>4. Когда деньги переведены, то нажмите кнопку "Отправить на модерацию".</p>

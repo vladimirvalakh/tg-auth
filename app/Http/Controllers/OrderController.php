@@ -253,11 +253,16 @@ class OrderController extends Controller
                 [
                     'attribute' => 'rent_status',
                     'label' => 'Статус аренды',
+                    'format' => 'html',
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'rents.status',
                         'data' => DB::table('rents')->pluck('status', 'status')->toArray()
                     ],
+                    'value' => function ($row) {
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-success" : "";
+                        return "<span class='". $class ."'>" . $row->rent_status . "</span>";
+                    },
                 ],
                 [
                     'attribute' => 'rental_period_up_to',
@@ -576,11 +581,16 @@ class OrderController extends Controller
                 [
                     'attribute' => 'rent_status',
                     'label' => 'Статус аренды',
+                    'format' => 'html',
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'rents.status',
                         'data' => DB::table('rents')->pluck('status', 'status')->toArray()
                     ],
+                    'value' => function ($row) {
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-success" : "";
+                        return "<span class='". $class ."'>" . $row->rent_status . "</span>";
+                    },
                 ],
                 [
                     'attribute' => 'rental_period_up_to',
@@ -713,11 +723,16 @@ class OrderController extends Controller
                 [
                     'attribute' => 'rent_status',
                     'label' => 'Статус аренды',
+                    'format' => 'html',
                     'filter' => [
                         'class' => DropdownFilter::class,
                         'name' => 'rents.status',
                         'data' => DB::table('rents')->pluck('status', 'status')->toArray()
                     ],
+                    'value' => function ($row) {
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-success" : "";
+                        return "<span class='". $class ."'>" . $row->rent_status . "</span>";
+                    },
                 ],
                 [
                     'attribute' => 'rental_period_up_to',

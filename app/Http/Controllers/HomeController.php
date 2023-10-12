@@ -454,10 +454,14 @@ class HomeController extends Controller
                 ],
                 [
                     'label' => 'Статус аренды',
-                    'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->status : '';
-                    },
+                    'format' => 'html',
                     'filter' => false,
+                    'value' => function ($row) {
+                        if ($row->rent) {
+                            $class = ($row->rent->status == Rent::ON_RENT_STATUS) ? "text-success" : "";
+                            return "<span class='". $class ."'>" . $row->rent->status . "</span>";
+                        }
+                    },
                 ],
                 [
                     'label' => 'Срок аренды до',
@@ -590,10 +594,14 @@ class HomeController extends Controller
                 ],
                 [
                     'label' => 'Статус аренды',
-                    'value' => function ($row) {
-                        return ($row->rent) ? $row->rent->status : '';
-                    },
+                    'format' => 'html',
                     'filter' => false,
+                    'value' => function ($row) {
+                        if ($row->rent) {
+                            $class = ($row->rent->status == Rent::ON_RENT_STATUS) ? "text-success" : "";
+                            return "<span class='". $class ."'>" . $row->rent->status . "</span>";
+                        }
+                    },
                 ],
                 [
                     'label' => 'Срок аренды до',

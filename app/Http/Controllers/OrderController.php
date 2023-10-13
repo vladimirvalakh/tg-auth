@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,6 +126,7 @@ class OrderController extends Controller
         }
 
         $order['order_status'] = Order::ON_RENT_STATUS;
+        $order['rental_period_up_to'] = Carbon::create($order['date'])->addMonth();
         $order->save();
 
         $rent = Rent::where('site_id', $order['site_id'])->first();
@@ -802,7 +804,7 @@ class OrderController extends Controller
             'sites.id as site_id',
             'sites.city_id as sites_city_id',
             'orders.city_id as city_id',
-            'orders.rental_period_up_to',
+            'orders.rental_period_up_to as rental_period_up_to',
             'orders.id as order_id',
             'orders.source',
             'cities.id as cities_id',
@@ -815,7 +817,6 @@ class OrderController extends Controller
             'rents.period as rent_period',
         )
             ->join('rents', 'rents.site_id', '=', 'sites.id')
-            ->join('orders', 'orders.site_id', '=', 'sites.id')
             ->join('cities', 'orders.city_id', '=', 'cities.id')
             ->orderBy('rents.status', 'DESC');
 

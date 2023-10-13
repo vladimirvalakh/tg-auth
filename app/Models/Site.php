@@ -5,6 +5,7 @@ namespace App\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Models\Order;
 
 /**
  * Class Site
@@ -82,6 +83,23 @@ class Site extends Model
     public static function prfList(): Array
     {
         return DB::table('sites')->pluck('prf', 'prf')->toArray();
+    }
+
+    public function getRentalPeriodUpTo($siteId) {
+        $order =  Site::select(
+            'sites.id as site_id',
+            'orders.rental_period_up_to',
+            'orders.order_status',
+            'orders.id as order_id',
+        )
+            ->join('orders', 'orders.site_id', '=', 'sites.id')
+            ->where('sites.id', $siteId)
+//            ->where('order_status', Order::ON_MODERATION_STATUS)
+            ->first();
+
+        if (!$order) return  Carbon::now()->addMonth()->format('d.m.Y');
+
+        return Carbon::create($order->rental_period_up_to)->format('d.m.Y');
     }
 
     public function getCountOrdersFor30days() {

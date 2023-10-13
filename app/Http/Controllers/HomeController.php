@@ -291,7 +291,8 @@ class HomeController extends Controller
         )->whereIn('sites.city_id', json_decode(auth()->user()->cities, true))
         ->join('rents', 'rents.site_id', '=', 'sites.id')
         ->join('cities', 'cities.id', '=', 'sites.city_id')
-        ->where('rents.status', 'В поиске');
+        ->whereIn('rents.status', [Rent::IN_SEARCH_STATUS, Rent::ON_RENT_STATUS])
+        ->orderBy('rents.status', 'DESC');
 
         $dataProvider = new EloquentDataProvider($sites);
 
@@ -310,9 +311,11 @@ class HomeController extends Controller
             'columnFields' => [
                 [
                     'attribute' => 'city_id',
+                    'format' => 'html',
                     'label' => 'Город',
                     'value' => function ($row) {
-                        return ($row->location) ? $row->location->city : "";
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
+                        return ($row->location) ? "<span class='" . $class. "'>" . $row->location->city . "</span>": "";
                     },
                     'filter' => false,
                 ],
@@ -320,7 +323,8 @@ class HomeController extends Controller
                     'label' => 'Сайт',
                     'format' => 'html',
                     'value' => function ($row) {
-                        return  Str::mask($row->url, '*', 2, -4);
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
+                        return ($row->url) ? "<span class='" . $class. "'>" .  Str::mask($row->url, '*', 2, -4) . "</span>": "";
                     },
                     'filter' => false,
                 ],
@@ -329,7 +333,8 @@ class HomeController extends Controller
                     'label' => 'Заявок 3 мес',
                     'value' => function ($data) {
                         $value = $data->getCountOrdersFor91days();
-                        return "<span class='rent_p90' data-site-id='". $data->site_id ."'>" . $value . "</span>";
+                        $class = ($data->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
+                        return "<span class='rent_p90 ". $class . "' data-site-id='". $data->site_id ."'>" . $value . "</span>";
                     },
                     'filter' => false,
                     'format' => 'html',
@@ -339,7 +344,8 @@ class HomeController extends Controller
                     'label' => 'Заявок 30 дней',
                     'value' => function ($data) {
                         $value = $data->getCountOrdersFor30days();
-                        return "<span class='rent_p30' data-site-id='". $data->site_id . "'>" . $value . "</span>";
+                        $class = ($data->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
+                        return "<span class='rent_p30 ". $class . "' data-site-id='". $data->site_id ."'>" . $value . "</span>";
                     },
                     'filter' => false,
                     'format' => 'html',
@@ -354,34 +360,39 @@ class HomeController extends Controller
                 ],
                 [
                     'attribute' => 'rental_price_per_month',
+                    'format' => 'html',
                     'label' => 'Цена аренды за месяц',
                     'value' => function ($row) {
-                        return ($row->location) ? $row->location->rental_price_per_month : "";
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
+                        return ($row->location) ? "<span class='" . $class. "'>" .  $row->location->rental_price_per_month . "</span>": "";
                     },
                     'filter' => false,
                 ],
                 [
                     'label' => 'Срок аренды',
+                    'format' => 'html',
                     'value' => function ($row) {
-                        return ($row->rent_period) ? $row->rent_period : "";
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
+                        return ($row->rent_period) ? "<span class='" . $class. "'>" .  $row->rent_period . "</span>": "";
                     },
                     'filter' => false,
                 ],
                 [
                     'label' => 'Действия',
-                    'class' => ActionColumn::class, // Required
+                    'format' => 'html',
                     'htmlAttributes' => [
                         'width' => '170'
                     ],
-                    'actionTypes' => [ // Required
-                        [
-                            'class' => CustomHtmlTag::class,
-                            'url' => function ($data) {
-                                return '/site/' . $data->site_id . '/data';
-                            },
-                            'htmlAttributes' => '<button type="button" class="btn btn-success rent-site-modal-button">Взять в аренду</button>',
-                        ]
-                    ],
+                    'value' => function ($data) {
+                        if ($data->rent_status == Rent::ON_RENT_STATUS) {
+                            $expiredDate = $data->getRentalPeriodUpTo($data->site_id);
+                            $html = '<p class="text-center text-muted">В аренде до '. $expiredDate .'</p><button type="button" data-site-id="' . $data->site_id . '" class="btn btn-sm btn-warning let-me-know">Уведомить, если освободится</button>';
+                        } else {
+                            $html = '<a href="/site/' . $data->site_id. '/data" class="col text-center"><button type="button" class="btn btn-success rent-site-modal-button">Взять в аренду</button></a>';
+                        };
+                        return $html;
+                    },
+                    'filter' => false,
                 ],
             ],
         ];

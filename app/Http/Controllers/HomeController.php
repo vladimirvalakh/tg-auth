@@ -350,14 +350,14 @@ class HomeController extends Controller
                     'filter' => false,
                     'format' => 'html',
                 ],
-                [
-                    'label' => 'Последние 10 заявок',
-                    'value' => function ($data) {
-                        return "<span class='last_10_orders' data-site-id='". $data->site_id . "'></span>";
-                    },
-                    'filter' => false,
-                    'format' => 'html',
-                ],
+//                [
+//                    'label' => 'Последние 10 заявок',
+//                    'value' => function ($data) {
+//                        return "<span class='last_10_orders' data-site-id='". $data->site_id . "'></span>";
+//                    },
+//                    'filter' => false,
+//                    'format' => 'html',
+//                ],
                 [
                     'attribute' => 'rental_price_per_month',
                     'format' => 'html',

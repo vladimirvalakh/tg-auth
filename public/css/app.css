@@ -23,9 +23,12 @@
 #account_navbar_menu a {
     text-align: end;
 }
-
+.header-center-text{
+    width: -webkit-fill-available;
+    color: #6f6f6f;
+}
 #account_navbar_menu .account_role {
-    width: 300px;
+    width: 150px;
     font-size: 14px;
     color: #a5a4a4;
     font-family: "Arial";

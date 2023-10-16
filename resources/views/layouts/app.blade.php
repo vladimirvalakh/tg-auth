@@ -57,9 +57,9 @@ use App\Models\Role;
     @include('modals.first-screen-modal')
 
     <script>
-        @if (auth()->user()->role && auth()->user()->role->slug === Role::ARENDATOR_SLUG && auth()->user()->first_screen)
-        $("#first-screen-modal").modal('show');
-        @endif
+{{--        @if (auth()->user()->role && auth()->user()->role->slug === Role::ARENDATOR_SLUG && auth()->user()->first_screen)--}}
+{{--        $("#first-screen-modal").modal('show');--}}
+{{--        @endif--}}
 
         $('select').select2({
             "language": {

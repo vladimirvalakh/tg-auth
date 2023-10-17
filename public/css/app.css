@@ -3,6 +3,46 @@
     color: white;
 }
 
+.btn-outline-danger {
+    color: #00397b;
+    border-color: #00397b;
+}
+
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: #00397b;
+    border-color: #00397b;
+}
+
+a {
+    color: #00397b!important;
+}
+
+table th a {
+    color: #00397b!important;
+}
+
+.btn-primary, .btn-success {
+    background-color: #00397b!important;
+    border-color: #00397b!important;
+}
+
+.navbar-nav .active {
+    background-color: #00397b!important;
+}
+
+.navbar-nav .active a {
+    color: white!important;
+}
+
+.system-text-color {
+    color: #00397b;
+}
+
+.system-background-color {
+    background-color: #00397b;
+}
+
 .btn-warning:hover {
     background-color: rgba(206, 4, 252, 0.75) !important;
     color: white;

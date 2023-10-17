@@ -58,9 +58,9 @@ use App\Models\Role;
 
     <nav class="navbar navbar-light navbar-expand-md d-flex flex-column flex-md-row p-2 px-md-1 mb-3 pl-2  border-bottom shadow-sm">
         <div class="collapse navbar-collapse">
-            <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-auto p-2">
                 @if($currentRoleSlug === Role::MODERATOR_SLUG)
-                    <li class="nav-item @if (request()->routeIs('orders')) active @endif">
+                    <li class="nav-item mr-1 @if (request()->routeIs('orders')) active @endif">
                         <a class="nav-link" href="{{route('orders')}}">Заявки</a>
                     </li>
                     <li class="nav-item @if (request()->routeIs('sites')) active @endif">
@@ -69,7 +69,7 @@ use App\Models\Role;
                 @endif
 
                 @if($currentRoleSlug === Role::ARENDATOR_SLUG)
-                    <li class="nav-item @if (request()->routeIs('sites')) active @endif">
+                    <li class="nav-item mr-1 @if (request()->routeIs('sites')) active @endif">
                         <a class="nav-link" href="{{route('sites')}}">Все сайты</a>
                     </li>
                     <li class="nav-item @if (request()->routeIs('orders')) active @endif">
@@ -101,8 +101,8 @@ use App\Models\Role;
         </div>
     </nav>
     <p class="p-3 text-secondary">
-        Источник заявок: Лэндинги и многостраничные сайты<br/>
-        Траффик: из поисковой выдачи Яндекса и контекстной рекламы
+        <strong>Источник заявок:</strong> Лэндинги и многостраничные сайты<br/>
+        <strong>Траффик:</strong> из поисковой выдачи Яндекса и контекстной рекламы
     </p>
 @else
     <nav class="navbar navbar-light bg-light  navbar-expand-md d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3  border-bottom shadow-sm">

@@ -1,5 +1,5 @@
 .btn-warning {
-    background-color: #ce04fc!important;
+    background-color: #00397b!important;
     color: white;
 }
 
@@ -44,7 +44,7 @@ table th a {
 }
 
 .btn-warning:hover {
-    background-color: rgba(206, 4, 252, 0.75) !important;
+    background-color: #00397b!important;
     color: white;
 }
 

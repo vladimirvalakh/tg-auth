@@ -349,6 +349,9 @@ class HomeController extends Controller
                     },
                     'filter' => false,
                     'format' => 'html',
+                    'htmlAttributes' => [
+                        'width' => '250'
+                    ],
                 ],
 //                [
 //                    'label' => 'Последние 10 заявок',
@@ -367,6 +370,9 @@ class HomeController extends Controller
                         return ($row->location) ? "<span class='" . $class. "'>" .  $row->location->rental_price_per_month . "</span>": "";
                     },
                     'filter' => false,
+                    'htmlAttributes' => [
+                        'width' => '100'
+                    ],
                 ],
                 [
                     'label' => 'Срок аренды',

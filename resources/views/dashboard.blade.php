@@ -75,7 +75,7 @@ use App\Models\Role;
     $('.rent_p30').parent('td').css({
         'width':'190px',
     });
-    $('.rent_p30').append('  <button type="button" class="btn btn-sm btn-outline-danger show-p30">Посмотреть заявки</button>');
+    $('.rent_p30').append('  <button type="button" class="btn btn-sm btn-outline-danger show-p30 float-right mr-2">Посмотреть заявки</button>');
 
     $('.last_10_orders').append('  <button type="button" class="btn btn-block btn-sm btn-outline-danger show-last-10-orders">Показать</button>');
 

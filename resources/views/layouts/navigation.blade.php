@@ -56,8 +56,8 @@ use App\Models\Role;
         </div>
     </nav>
 
-    <nav class="navbar navbar-light navbar-expand-md d-flex flex-column flex-md-row p-2 px-md-1 mb-3 pl-2  border-bottom shadow-sm">
-        <div class="collapse navbar-collapse">
+    <nav class="navbar navbar-light navbar-expand-md d-flex flex-column flex-md-row p-2 px-md-1 mb-3 pl-2 border-bottom shadow-sm arendator-menu">
+        <div class="collapse navbar-collapse arendator-menu-container">
             <ul class="navbar-nav mr-auto p-2">
                 @if($currentRoleSlug === Role::MODERATOR_SLUG)
                     <li class="nav-item mr-1 @if (request()->routeIs('orders')) active @endif">

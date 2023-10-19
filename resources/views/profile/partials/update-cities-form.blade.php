@@ -56,6 +56,18 @@ $regions = City::regionsList();
         $('#select-cities-top-form').children().remove().end();
     }
 
+    $(document).ready(function () {
+        let isGrid = document.getElementsByClassName('grid-dashboard').length;
+
+        if (isGrid < 1) {
+            $('.arendator-menu').attr('style','display:none !important');
+            $('.arendator-menu-container').attr('style','display:none !important');
+        } else {
+            $('.arendator-menu').attr('style','display:block !important');
+            $('.arendator-menu-container').attr('style','display:block !important');
+        }
+    });
+
     $(function(){
         $('select option').filter(function(){
             return ($(this).val().trim()=="" && $(this).text().trim()=="");

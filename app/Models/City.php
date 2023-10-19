@@ -70,10 +70,12 @@ class City extends Model
 
     public static function regionsList(): ?array
     {
-        return DB::table('cities')
+        $list = DB::table('cities')
             ->orderBy('id')
             ->pluck('subject_rf', 'id')
             ->toArray();
+
+        return array_unique($list);
     }
 
     public static function citiesfListByRegionByCityId(int $cityId): ?array

@@ -65,6 +65,7 @@ $regions = City::regionsList();
         } else {
             $('.arendator-menu').attr('style','display:block !important');
             $('.arendator-menu-container').attr('style','display:block !important');
+            $('.arendator-welcome').hide();
         }
     });
 

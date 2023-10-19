@@ -100,7 +100,7 @@ use App\Models\Role;
             </ul>
         </div>
     </nav>
-    <p class="p-3 text-secondary">
+    <p class="p-3 text-secondary arendator-welcome">
         <strong>Источник заявок:</strong> Лэндинги и многостраничные сайты<br/>
         <strong>Траффик:</strong> из поисковой выдачи Яндекса и контекстной рекламы
     </p>

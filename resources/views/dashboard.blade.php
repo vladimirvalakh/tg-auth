@@ -61,6 +61,9 @@ use App\Models\Role;
         xhr.onload = () => {
             const data = JSON.parse(xhr.responseText);
             $("#rent-site-modal").find('#site_id').val(data.site.id);
+            $("#rent-site-modal").find('#administrator-phone-number').html(data.administrator_data.phone);
+            $("#rent-site-modal").find('#administrator-full_name').html(data.administrator_data.full_name);
+            $("#rent-site-modal").find('#administrator-bank_cards_text').html(data.bank_cards_text);
             $("#rent-site-modal").find('#city_id').val(data.location.id);
             $("#rent-site-modal").find('#rent_id').val(data.rent.id);
             $("#rent-site-modal").find('.site_name').html("<a href='http://"+ data.site.url +"' target='_blank'>" + data.site.url + "</a>");

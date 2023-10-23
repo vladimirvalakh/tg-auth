@@ -17,8 +17,9 @@
                     </button>
                 </div>
                 <div class="modal-body">
+
                     <p>1. Вы выбрали аренду сайта <b><span class="site_name"></span></b> в городе <b><span class="city_name"></span></b> на 1 месяц до <b><span class="period_date"></span></b>.</p>
-                    <p>2. Переведите <b><span class="rental_price"></span> руб</b> на карту по номеру телефона +79879503604 получатель Алексей Владимирович А., на Сбер (5479 2754 0006 5263) или Тинькофф (5536 9138 6743 0734).</p>
+                    <p>2. Переведите <b><span class="rental_price"></span> руб</b> на карту по номеру телефона <br /><span id="administrator-phone-number"></span><br />получатель <span id="administrator-full_name"></span>, <span id="administrator-bank_cards_text"></span></p>
 
 
                     <div class="form-group">

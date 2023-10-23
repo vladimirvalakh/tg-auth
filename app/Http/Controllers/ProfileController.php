@@ -165,15 +165,45 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $user = User::findOrFail(Auth::id());
+
+        $user->name = $request->get('name');
+        $user->email = $request->get('email');
+        $user->full_name = $request->get('full_name');
+
+        $bankCards = [];
+
+        if (!empty($request->get('bank1') && !empty($request->get('card1')))) {
+            $bankCards[] = [
+                'bank' => $request->get('bank1'),
+                'card_number' => $request->get('card1')
+            ];
         }
 
-        $request->user()->save();
+        if (!empty($request->get('bank2') && !empty($request->get('card2')))) {
+            $bankCards[] = [
+                'bank' => $request->get('bank2'),
+                'card_number' => $request->get('card2')
+            ];
+        }
+
+        if (!empty($request->get('bank3') && !empty($request->get('card3')))) {
+            $bankCards[] = [
+                'bank' => $request->get('bank3'),
+                'card_number' => $request->get('card3')
+            ];
+        }
+
+        $user->full_name = $request->get('full_name');
+
+        $user->phone = $request->get('phone');
+
+        $user->bank_cards = json_encode($bankCards);
+
+        $user->save();
 
         return Redirect::route('sites')->with('status', 'profile-updated');
     }

@@ -71,9 +71,24 @@ class HomeController extends Controller
             abort(403);
         }
 
+        $administratorData = User::where('role_id', Role::ADMINISTRATOR_ROLE_ID)->first();
+        $bankCards = json_decode($administratorData['bank_cards'], true);
+        $bankCardsText = '';
+
+        if (!empty($bankCards)) {
+            $bankCardsText .= ' на <br />';
+            foreach ($bankCards as $bankCard) {
+                $bankCardsText .=  $bankCard['bank'] . ' (' . $bankCard['card_number'] . ')' . '<br />';
+            }
+        }
+
+
+
         return [
             'site' => $site,
+            'administrator_data' => $administratorData,
             'location' => $site->location,
+            'bank_cards_text' => $bankCardsText,
             'rent' => $site->rent,
             'period_date' => Carbon::now()->addMonth()->format('d.m.Y'),
         ];

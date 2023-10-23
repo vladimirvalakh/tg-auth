@@ -1,3 +1,7 @@
+<?php
+$bankCards = json_decode($user->bank_cards, true);
+?>
+
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
@@ -19,6 +23,51 @@
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
+        <div class="form-group">
+            <x-input-label for="full_name" value="Ф.И.O" />
+            <x-text-input id="full_name" name="full_name" type="text" class="form-control mt-1 block w-full" :value="old('full_name', $user->full_name)" autofocus autocomplete="full_name" />
+            <x-input-error class="mt-2" :messages="$errors->get('full_name')" />
+        </div>
+
+        <div class="form-group">
+            <x-input-label for="phone" value="Телефон (в формате 888 888 8888)" />
+            <x-text-input id="phone" name="phone" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" type="text" class="form-control mt-1 block w-full" :value="old('phone', $user->phone)" autofocus autocomplete="phone" />
+            <x-input-error class="mt-2" :messages="$errors->get('phone')" />
+        </div>
+
+        <hr />
+        <h4>Банковские карты</h4>
+        <div class="form-row">
+            <div class="col">
+                <x-input-label for="bank1" value="Наименование банка" />
+                <input type="text" class="form-control" name="bank1" @if(!empty($bankCards[0]['bank'])) value="{{$bankCards[0]['bank']}}"@endif>
+            </div>
+            <div class="col">
+                <x-input-label for="card1" value="Номер карты в формате XXXX XXXX XXXX XXXX" />
+                <input type="text" pattern="[0-9]{4}\s[0-9]{4}\s[0-9]{4}\s[0-9]{4}" class="form-control" name="card1" @if(!empty($bankCards[0]['card_number'])) value="{{$bankCards[0]['card_number']}}"@endif>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <x-input-label for="bank2" value="Наименование банка" />
+                <input type="text" class="form-control" name="bank2" @if(!empty($bankCards[1]['bank'])) value="{{$bankCards[1]['bank']}}"@endif>
+            </div>
+            <div class="col">
+                <x-input-label for="card2" value="Номер карты в формате XXXX XXXX XXXX XXXX" />
+                <input type="text" pattern="[0-9]{4}\s[0-9]{4}\s[0-9]{4}\s[0-9]{4}" class="form-control" name="card2" @if(!empty($bankCards[1]['card_number'])) value="{{$bankCards[1]['card_number']}}"@endif>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="col">
+                <x-input-label for="bank3" value="Наименование банка" />
+                <input type="text" class="form-control" name="bank3" @if(!empty($bankCards[2]['bank'])) value="{{$bankCards[2]['bank']}}"@endif>
+            </div>
+            <div class="col">
+                <x-input-label for="card3" value="Номер карты в формате XXXX XXXX XXXX XXXX" />
+                <input type="text" pattern="[0-9]{4}\s[0-9]{4}\s[0-9]{4}\s[0-9]{4}" class="form-control" name="card3" @if(!empty($bankCards[2]['card_number'])) value="{{$bankCards[2]['card_number']}}"@endif>
+            </div>
+        </div>
+        <hr />
         @if ($user->role)
         <div class="form-group">
             <x-input-label for="role" value="Роль" />

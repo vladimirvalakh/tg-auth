@@ -9,7 +9,7 @@
                 <p class="container">Для отправки уведомления о заявке для арендатора (через API) используется POST-запрос формата: <br />
                 <br />
                     Method: <code>POST</code> / HTTP/1.1<br />
-                    Host: <code>http://sinclair.com4.ru/api/v1/order/send</code><br />
+                    Host: <code>{{config('app.url')}}/api/v1/order/send</code><br />
                     Content-Type: <code>application/x-www-form-urlencoded</code><br />
                     Authorization Token: <code>Bearer ZWxtOkRlcjMhW2xqNmlLWmNuZmUxXg==</code><br /><br>
                     BODY:<br />

@@ -1,0 +1,24 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API",
+        "description": "API documentation",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/healthcheck": {
+            "get": {
+                "tags": [
+                    "System"
+                ],
+                "summary": "Validate a server status",
+                "operationId": "93c76f6e8ed3559153ecd9f448f0b036",
+                "responses": {
+                    "200": {
+                        "description": "Server is valid"
+                    }
+                }
+            }
+        }
+    }
+}

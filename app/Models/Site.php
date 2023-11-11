@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use App\Models\Order;
+use App\Models\Rent;
 
 /**
  * Class Site
@@ -78,6 +79,21 @@ class Site extends Model
     public static function urlsList(): Array
     {
         return DB::table('sites')->pluck('url', 'url')->toArray();
+    }
+
+    public static function getArendatorId($site_id)
+    {
+        return Rent::where('site_id', $site_id)->value('user_id');
+    }
+
+    public static function getCityId($site_id)
+    {
+        return Site::where('id', $site_id)->value('city_id');
+    }
+
+    public function getCityName()
+    {
+        return City::where('id', $this->city_id)->value('city');
     }
 
     public static function prfList(): Array

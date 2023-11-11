@@ -459,6 +459,14 @@ class HomeController extends Controller
                         'data' => City::citiesList(),
                     ],
                 ],
+//                [
+//                    'label' => 'site_id',
+//                    'format' => 'html',
+//                    'filter' => false,
+//                    'value' => function ($row) {
+//                        return ($row->id) ? $row->id : "";
+//                    },
+//                ],
                 [
                     'attribute' => 'url',
                     'label' => 'Сайт',

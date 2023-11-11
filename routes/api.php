@@ -1,19 +1,15 @@
 <?php
 
-use Illuminate\Http\Request;
+declare(strict_types=1);
+
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\v1\ApiController;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes
+| API V1 Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
 */
+Route::get('/v1/healthcheck', 'App\Http\Controllers\Api\v1\ApiController@healthcheck');
+Route::post('v1/order/send', 'App\Http\Controllers\Api\v1\OrderController@send');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});

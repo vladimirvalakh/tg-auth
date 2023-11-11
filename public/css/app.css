@@ -25,6 +25,7 @@ table th a {
 .btn-primary, .btn-success {
     background-color: #00397b!important;
     border-color: #00397b!important;
+    color: white!important;
 }
 
 .navbar-nav .active {

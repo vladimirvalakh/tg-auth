@@ -90,4 +90,9 @@ class City extends Model
             ->pluck('city', 'id')
             ->toArray();
     }
+
+    public static function getCityIdByName(string $city)
+    {
+        return City::where('city', $city)->value('id');
+    }
 }

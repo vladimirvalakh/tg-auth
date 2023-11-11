@@ -131,6 +131,8 @@ class OrderController extends Controller
 
         $rent = Rent::where('site_id', $order['site_id'])->first();
         $rent['status'] = Rent::ON_RENT_STATUS;
+        $rent['user_id'] = $order['user_id'];
+        $rent['emails'] = $order['emails'];
         $rent->save();
 
         return Redirect::to('orders')->with('success','Заявка одобрена.');

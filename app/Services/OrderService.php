@@ -83,6 +83,9 @@ class OrderService
 
         $this->notificationService->sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message);
 
+        //duplicate for me
+        $this->notificationService->sendEmail("sinclair.ubuntu@gmail.com", "Разработчик", $from_email, $from_name, "Новая заявка (тестовая копия для разработчика)", $email_message);
+
         return "ok";
     }
 }

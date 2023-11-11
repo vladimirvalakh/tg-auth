@@ -18,6 +18,11 @@ $bankCards = json_decode($user->bank_cards, true);
         @method('patch')
 
         <div class="form-group">
+            <x-input-label for="id" value="ID пользователя в системе" />
+            <x-text-input id="id" name="id" type="text" class="form-control mt-1 block w-full" :value="old('id', $user->id)" disabled  />
+        </div>
+
+        <div class="form-group">
             <x-input-label for="name" value="Имя" />
             <x-text-input id="name" name="name" type="text" class="form-control mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />

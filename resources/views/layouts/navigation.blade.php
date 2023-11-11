@@ -173,6 +173,8 @@ use App\Models\Role;
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="{{route('profile.settings')}}">Настройки аккаунта</a>
                             <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{{route('profile.info.api_details')}}">Настройка API</a>
+                            <div class="dropdown-divider"></div>
                             <form method="POST" action="{{route('logout')}}">
                                 @csrf
                                 <a class="dropdown-item" href="{{route('logout')}}" onclick="event.preventDefault();

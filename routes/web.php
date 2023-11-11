@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\InfoController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\ModalController;
 use App\Http\Controllers\OrderController;
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::get('/delete', [ProfileController::class, 'delete'])->name('profile.delete');
     Route::get('/settings', [ProfileController::class, 'settings'])->name('profile.settings');
+    Route::get('/info/api-details', [InfoController::class, 'showApiDetails'])->name('profile.info.api_details');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('profile/first-screen-update', [ProfileController::class, 'firstScreenUpdate'])->name('profile.first.screen.update');

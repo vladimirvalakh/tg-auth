@@ -17,4 +17,9 @@ class UserRepository extends CustomRepository
     {
         return User::create($data);
     }
+
+    public function getUserIdByTelegramUsername(string $telegramUsername): int
+    {
+        return User::where('username', $telegramUsername)->value('id');
+    }
 }

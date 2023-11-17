@@ -27,7 +27,7 @@ class TelegramRepository extends CustomRepository
         $message = urlencode($message);
 
         try {
-            file_get_contents("https://api.telegram.org/bot$telegramBotToken/sendMessage?chat_id=$telegramId&text=" . $message);
+            file_get_contents("https://api.telegram.org/bot$telegramBotToken/sendMessage?chat_id=$telegramId&parse_mode=html&text=" . $message);
         } catch (\Exception $e){
             var_dump($e->getMessage());
         }

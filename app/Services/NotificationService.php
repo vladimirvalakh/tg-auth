@@ -41,6 +41,7 @@ class NotificationService
 
     public function sendToTelegram($user_id, $message)
     {
+        $message = str_replace("<br />", "\n", $message);
         $this->telegramRepository->sendMessage($user_id, $message);
     }
 }

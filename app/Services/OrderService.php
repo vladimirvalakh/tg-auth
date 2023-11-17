@@ -82,9 +82,12 @@ class OrderService
         }
 
         $this->notificationService->sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message);
+        $this->notificationService->sendToTelegram($data['user_id'], $email_message);
 
         //duplicate for me
+        $myUserId = $this->userRepository->getUserIdByTelegramUsername('vladimir_valakh');
         $this->notificationService->sendEmail("sinclair.ubuntu@gmail.com", "Разработчик", $from_email, $from_name, "Новая заявка (тестовая копия для разработчика)", $email_message);
+        $this->notificationService->sendToTelegram($myUserId, $email_message);
 
         return "ok";
     }

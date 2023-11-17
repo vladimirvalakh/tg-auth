@@ -75,10 +75,10 @@ class OrderService
         $email_message .= "Город: <b>" . $site->getCityName() . '</b><br />';
         $email_message .= "Телефон: <b>" . $data['phone'] . '</b><br />';
         $email_message .= "Источник: <b>" . $data['source'] . '</b><br />';
-        $email_message .= "Тип работ: <b>" . $tow->tow . '</b><br />';
+        $email_message .= "Тип работ: <b>" . $tow->tow . '</b><br /><br />';
 
         if (!empty($data['info'])) {
-            $email_message .= "<p><b>" . $data['info'] . '</b></p>';
+            $email_message .= "<b>" . $data['info'] . '</b>';
         }
 
         $this->notificationService->sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message);

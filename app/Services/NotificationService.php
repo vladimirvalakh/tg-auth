@@ -5,17 +5,17 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Facades\Mail;
-use App\Repositories\UserRepository;
+use App\Repositories\TelegramRepository;
 
 
 class NotificationService
 {
-    private UserRepository $userRepository;
+    private TelegramRepository $telegramRepository;
 
     public function __construct(
-        UserRepository $userRepository,
+        TelegramRepository $telegramRepository,
     ) {
-        $this->userRepository = $userRepository;
+        $this->telegramRepository = $telegramRepository;
     }
 
     public function sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message)
@@ -41,15 +41,6 @@ class NotificationService
 
     public function sendToTelegram($user_id, $message)
     {
-        $telegramId = $this->userRepository->getUser($user_id)->telegram_id;
-        $telegramBotToken = env('TELEGRAM_BOT_TOKEN');
-
-        $message = urlencode($message);
-
-        try {
-            file_get_contents("https://api.telegram.org/bot$telegramBotToken/sendMessage?chat_id=$telegramId&text=" . $message);
-        } catch (\Exception $e){
-            var_dump($e->getMessage());
-        }
+        $this->telegramRepository->sendMessage($user_id, $message);
     }
 }

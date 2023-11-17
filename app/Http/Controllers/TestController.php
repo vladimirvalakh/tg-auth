@@ -17,7 +17,7 @@ class TestController extends Controller
 //
 //
 //        $notificationService->sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message);
-        $notificationService->sendToTelegram(86, "Hello!!!\nКак сам?");
+        $notificationService->sendToTelegram(86, "Hello!!!\nКак сам?\nНорм?");
         var_dump('ok');
         die();
     }

@@ -22,4 +22,14 @@ class UserRepository extends CustomRepository
     {
         return User::where('username', $telegramUsername)->value('id');
     }
+
+    public function getUserIdByTelegramId($telegramId): int
+    {
+        return User::where('telegram_id', $telegramId)->value('id');
+    }
+
+    public function getUserByTelegramId($telegramId)
+    {
+        return User::where('telegram_id', $telegramId)->first();
+    }
 }

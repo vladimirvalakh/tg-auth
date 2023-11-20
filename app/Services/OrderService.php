@@ -19,19 +19,22 @@ class OrderService
     private TowRepository $towRepository;
     private SiteRepository $siteRepository;
     private NotificationService $notificationService;
+    private TelegramService $telegramService;
 
     public function __construct(
         OrderRepository $orderRepository,
         UserRepository $userRepository,
         TowRepository $towRepository,
         SiteRepository $siteRepository,
-        NotificationService $notificationService
+        NotificationService $notificationService,
+        TelegramService $telegramService
     ) {
         $this->orderRepository = $orderRepository;
         $this->notificationService = $notificationService;
         $this->userRepository = $userRepository;
         $this->towRepository = $towRepository;
         $this->siteRepository = $siteRepository;
+        $this->telegramService = $telegramService;
     }
 
     public function sendOrderToArendator(array $data)
@@ -82,12 +85,12 @@ class OrderService
         }
 
         $this->notificationService->sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message);
-        $this->notificationService->sendToTelegram($data['user_id'], $email_message);
+        $this->telegramService->sendToTelegramForUserId($data['user_id'], $email_message);
 
         //duplicate for me
         $myUserId = $this->userRepository->getUserIdByTelegramUsername('vladimir_valakh');
         $this->notificationService->sendEmail("sinclair.ubuntu@gmail.com", "Разработчик", $from_email, $from_name, "Новая заявка (тестовая копия для разработчика)", $email_message);
-        $this->notificationService->sendToTelegram($myUserId, $email_message);
+        $this->telegramService->sendToTelegramForUserId($myUserId, $email_message);
 
         return "ok";
     }

@@ -5,18 +5,9 @@ declare(strict_types=1);
 namespace App\Services;
 
 use Illuminate\Support\Facades\Mail;
-use App\Repositories\TelegramRepository;
-
 
 class NotificationService
 {
-    private TelegramRepository $telegramRepository;
-
-    public function __construct(
-        TelegramRepository $telegramRepository,
-    ) {
-        $this->telegramRepository = $telegramRepository;
-    }
 
     public function sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message)
     {
@@ -36,12 +27,5 @@ class NotificationService
             ->subject($subject);
             $message->from($from_email, $from_name);
         });
-
-    }
-
-    public function sendToTelegram($user_id, $message)
-    {
-        $message = str_replace("<br />", "\n", $message);
-        $this->telegramRepository->sendMessage($user_id, $message);
     }
 }

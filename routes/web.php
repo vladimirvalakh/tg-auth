@@ -69,6 +69,11 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('role/update', [ProfileController::class, 'roleUpdate'])->name('role.update');
     Route::patch('profile/city-update', [ProfileController::class, 'cityUpdate'])->name('profile.city.update');
+
+    Route::get('/user/{user}/send-telegram-message', [TelegramController::class, 'sendMessageModal'])->name('telegram.send.modal');
+    Route::post('/user/send-telegram-message', [TelegramController::class, 'sendMessage'])->name('telegram.send');
+
+
 });
 
 require __DIR__.'/auth.php';

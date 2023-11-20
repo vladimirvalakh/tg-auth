@@ -13,6 +13,8 @@ use Illuminate\View\View;
 use App\Models\City;
 use App\Models\Role;
 use Exception;
+use Itstructure\GridView\Actions\CustomHtmlTag;
+use Itstructure\GridView\Columns\ActionColumn;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use Itstructure\GridView\Filters\DropdownFilter;
 
@@ -61,6 +63,19 @@ class ProfileController extends Controller
                         'class' => DropdownFilter::class,
                         'name' => 'role_id', // REQUIRED if 'attribute' is not defined for column.
                         'data' => DB::table('roles')->pluck('name', 'id')->toArray()
+                    ],
+                ],
+                [
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class, // Required
+                    'actionTypes' => [
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($row) {
+                                return '/user/' . $row->id . '/send-telegram-message';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-success send-telegram-message-modal-button mb-1">Отправить сообщение в Telegram</button>',
+                        ],
                     ],
                 ],
             ],

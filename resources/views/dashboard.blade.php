@@ -34,6 +34,7 @@ use App\Models\Role;
 
 
 @include('modals.rent-site-modal')
+@include('modals.send-telegram-message-modal')
 @include('modals.site-get-30-days-orders-modal')
 @include('modals.delete-order-modal')
 @include('modals.let-me-know-modal')
@@ -71,6 +72,19 @@ use App\Models\Role;
             $("#rent-site-modal").find('.rental_price').text(data.location.rental_price_per_month);
             $("#rent-site-modal").find('.period_date').text(data.period_date);
             $("#rent-site-modal").modal('show');
+        };
+    });
+
+    $('.send-telegram-message-modal-button').click(function(event){
+        event.preventDefault();
+        let url = $(this).parent().attr('href');
+        let xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.send();
+        xhr.onload = () => {
+            const data = JSON.parse(xhr.responseText);
+            $("#send-telegram-message-modal").find('#user_id').val(data.user.id);
+            $("#send-telegram-message-modal").modal('show');
         };
     });
 

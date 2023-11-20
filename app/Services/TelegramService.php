@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Auth;
+use App\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\TelegramRepository;
 use App\Repositories\UserRepository;
@@ -64,10 +64,6 @@ class TelegramService
         ]);
 
         if ($text) {
-            if ($text == "/orders") {
-                $message = "Orders: ";
-            }
-
             if ($text == "/api") {
                 $message = "Информация по настройке API: \n\n";
                 $message .= "Для отправки уведомления о заявке для арендатора (через API) используется POST-запрос формата:\n";
@@ -93,6 +89,16 @@ class TelegramService
                 $message .= "<code>Ф.И.O:</code> " . $currentUser->full_name . "\n";
                 $message .= "<code>Телефон:</code> " . $currentUser->phone . "\n";
                 $message .= "<code>Роль:</code> " . $currentUser->role->name . "\n";
+            }
+
+            if ($text == "/orders") {
+                $currentUser = $this->userRepository->getUserByTelegramId($chatId);
+                $role = $currentUser->role->name;
+                if ($role == Role::ADMINISTRATOR_SLUG) {
+                    $message = "Для пользователей с ролью '". $role ."' заявок нет.\n";
+                }
+
+                $message = "Для просмотра заявок на сайте <a href='https://sinclair.com4.ru/orders'>перейдите по ссылке</a>.\n";
             }
 
             if (isset($message) && $message != '') {

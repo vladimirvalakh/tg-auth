@@ -30,6 +30,7 @@ Route::get('/test/send-mail', [TestController::class, 'sendMail'])->name('test.s
 Route::get('/categories', [CategoryController::class, 'list'])->name('categories')->middleware(['auth', 'verified']);
 Route::get('/roles', [HomeController::class, 'roles'])->name('roles')->middleware(['auth', 'verified']);
 Route::post('/telegram/webhook', [TelegramController::class, 'webhook'])->name('telegram.webhook');
+Route::get('/telegram/updates', [TelegramController::class, 'getUpdates'])->name('telegram.updates');
 
 Route::middleware('auth')->group(function () {
     Route::get('/site/{site}/view', [HomeController::class, 'siteView'])->name('site.view');

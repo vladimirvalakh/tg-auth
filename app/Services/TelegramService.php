@@ -98,7 +98,7 @@ class TelegramService
                     $message = "Для пользователей с ролью '". $role ."' заявок нет.\n";
                 }
 
-                $message = "Для просмотра заявок на сайте <a href='https://sinclair.com4.ru/orders'>перейдите по ссылке</a>.\n";
+                $message = "Для просмотра заявок на сайте <a href='https://test.lead-mart.ru/orders'>перейдите по ссылке</a>.\n";
             }
 
             if (isset($message) && $message != '') {

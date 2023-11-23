@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "darkaonline/l5-swagger": "^8.3",
+        "eleirbag89/telegrambotphp": "^1.4",
         "guzzlehttp/guzzle": "^7.2",
         "irazasyed/telegram-bot-sdk": "^3.13",
         "itstructure/laravel-grid-view": "~1.0.11",

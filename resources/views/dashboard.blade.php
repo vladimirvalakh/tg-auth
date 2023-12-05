@@ -38,6 +38,7 @@ use App\Models\Role;
 @include('modals.site-get-30-days-orders-modal')
 @include('modals.delete-order-modal')
 @include('modals.let-me-know-modal')
+@include('modals.decline-order-modal')
 
 <script>
     let date_options = {
@@ -73,6 +74,13 @@ use App\Models\Role;
             $("#rent-site-modal").find('.period_date').text(data.period_date);
             $("#rent-site-modal").modal('show');
         };
+    });
+
+    $('.decline-order-button').click(function(event){
+        event.preventDefault();
+        let url = $(this).parent().attr('href');
+        $("#decline-order-modal").find('#decline-modal-form-url').attr("action", url);
+        $("#decline-order-modal").modal('show');
     });
 
     $('.send-telegram-message-modal-button').click(function(event){

@@ -62,7 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'list'])->name('orders');
     Route::get('/order/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');
     Route::put('/order/{order}/update', [OrderController::class, 'update'])->name('order.update');
-    Route::get('/order/{order}/destroy', [OrderController::class, 'destroy'])->name('order.destroy');
+    Route::post('/order/{order}/destroy', [OrderController::class, 'destroy'])->name('order.destroy');
     Route::get('/order/{order}/approve', [OrderController::class, 'approve'])->name('order.approve');
     Route::get('/order/add', [OrderController::class, 'add'])->name('order.add');
 

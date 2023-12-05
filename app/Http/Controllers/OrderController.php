@@ -138,7 +138,7 @@ class OrderController extends Controller
         return Redirect::to('orders')->with('success','Заявка одобрена.');
     }
 
-    public function destroy(Order $order)
+    public function destroy(Request $request, Order $order)
     {
         $currentRole = auth()->user()->role;
 
@@ -150,14 +150,18 @@ class OrderController extends Controller
             abort(403);
         }
 
+        $declineReason = $request->input('decline-reason');
+
         $order = Order::findOrFail($order->id);
-        $order->delete();
+        $order->comm_moderator = $declineReason;
+        $order->order_status = Order::ORDER_STATUS_DECLINED;
+        $order->save();
 
         $rent = Rent::where('site_id', $order['site_id'])->first();
         $rent['status'] = Rent::IN_SEARCH_STATUS;
         $rent->save();
 
-        return Redirect::to('orders')->with('success','Заявка удалена.');
+        return Redirect::to('orders')->with('success','Заявка отклонена.');
     }
 
     public function update(Request $request, Order $order)
@@ -496,7 +500,7 @@ class OrderController extends Controller
                             'url' => function ($data) {
                                 return '/order/' . $data->order_id . '/destroy';
                             },
-                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger">Отклонить заявку</button>',
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger decline-order-button">Отклонить заявку</button>',
                         ],
                     ],
                 ],

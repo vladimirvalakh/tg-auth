@@ -22,6 +22,7 @@ class Order extends Model
     public const IN_SEARCH_STATUS = 'В поиске';
     public const ON_RENT_STATUS = 'В аренде';
     public const ON_MODERATION_STATUS = 'На модерации';
+    public const ORDER_STATUS_DECLINED = 'Отклонён';
 
     /**
      * The attributes that are mass assignable.
@@ -36,6 +37,7 @@ class Order extends Model
         'user_id',
         'status',
         'order_status',
+        'comm_moderator',
         'emails',
         'viber',
         'source',

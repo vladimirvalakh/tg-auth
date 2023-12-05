@@ -7,12 +7,10 @@
                     Категория: <b>{{$site->category->name}}</b><br/>
                     URL: <b><a href="{{$site->url}}" target="_blank">{{$site->url}}</a></b><br/>
                     Город: <b>{{$site->location->city }}</b><br/>
-                    Город локатив: <b>{{$site->location->locative}}</b><br/>
                     Субъект РФ: <b>{{$site->location->subject_rf}}</b><br/>
                     Расстояние: <b>{{$site->location->distance}}</b><br/>
                     Население: <b>{{$site->location->population}}</b><br/>
                     TAX: <b>{{$site->location->tax}}</b><br/>
-                    Цена за лид: <b>{{$site->location->price_per_lead}}</b><br/>
                     Статус аренды: <b>{{$site->rent->status}}</b><br/>
 
                     Eмайлы: <b>{{$site->rent->emails}}</b><br/>
@@ -28,16 +26,11 @@
                     Email 2: <b>{{$site->email2}}</b><br/>
                     Koeff: <b>{{$site->koeff}}</b><br/>
                     mail domain: <b>{{$site->mail_domain}}</b><br/>
-                    Yandex Metrica ID: <b>{{$site->YmetricaId}}</b><br/>
-                    VENYOOId: <b>{{$site->VENYOOId}}</b><br/>
                     tgchatid: <b>{{$site->tgchatid}}</b><br/>
                     GMiframe1: <b>{{$site->GMiframe1}}</b><br/>
-                    GMiframe2: <b>{{$site->GMiframe2}}</b><br/>
-                    areas: <b>{{$site->areas}}</b><br/>
                     crm: <b>{{$site->crm}}</b><br/>
                     crm_pass: <b>{{$site->crm_pass}}</b><br/>
                     crm_u: <b>{{$site->crm_u}}</b><br/>
-                    prf: <b>{{$site->prf}}</b><br/>
                 </div>
                 <hr/>
                 <a class="btn btn-primary text-center" href="{{url()->previous()}}">

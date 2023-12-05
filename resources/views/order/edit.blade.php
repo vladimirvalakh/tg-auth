@@ -9,7 +9,7 @@
                         <div class="form-group row">
                             <label for="phone" class="col-sm-4 col-form-label">Телефон (в формате 888 888 8888)</label>
                             <div class="col-sm-8">
-                                <input type="text" required placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control" id="phone" name="phone" value="{{ old('phone', $order->phone) }}">
+                                <input type="text" required placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control input-phone-field" id="phone" name="phone" value="{{ old('phone', $order->phone) }}">
                             </div>
                         </div>
 

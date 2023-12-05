@@ -24,12 +24,12 @@
 
                     <div class="form-group">
                         <x-input-label for="phone" value="3. Введите телефон на сайт в формате 888 888 8888" />
-                        <x-text-input id="phone" name="phone" type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  required class="form-control mt-1 block w-full" />
+                        <x-text-input id="phone" name="phone" type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  required class="form-control mt-1 block w-full input-phone-field" />
                     </div>
 
                     <div class="form-group">
                         <x-input-label for="viber" value="Вацап/вайбер для получения заявок в формате 888 888 8888" />
-                        <x-text-input id="viber" name="viber" type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control mt-1 block w-full" />
+                        <x-text-input id="viber" name="viber" type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control mt-1 block w-full input-phone-field" />
                     </div>
 
                     <div class="form-group">

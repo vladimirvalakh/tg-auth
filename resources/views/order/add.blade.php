@@ -9,7 +9,7 @@
                         <div class="form-group row">
                             <label for="phone" class="col-sm-4 col-form-label">Телефон</label>
                             <div class="col-sm-8">
-                                <input required type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  class="form-control" id="phone" name="phone">
+                                <input required type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  class="form-control input-phone-field" id="phone" name="phone">
                             </div>
                         </div>
 

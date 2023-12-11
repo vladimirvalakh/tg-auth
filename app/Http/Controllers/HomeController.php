@@ -325,6 +325,11 @@ class HomeController extends Controller
 
             'columnFields' => [
                 [
+                    'attribute' => 'site_id',
+                    'label' => 'ID сайта',
+                    'filter' => false,
+                ],
+                [
                     'attribute' => 'city_id',
                     'format' => 'html',
                     'label' => 'Город',

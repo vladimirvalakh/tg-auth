@@ -226,6 +226,11 @@ class OrderController extends Controller
 
             'columnFields' => [
                 [
+                    'attribute' => 'site_id',
+                    'label' => 'ID сайта',
+                    'filter' => false,
+                ],
+                [
                     'attribute' => 'subject_rf',
                     'label' => 'Субъект РФ',
                     'format' => 'html',

@@ -18,8 +18,8 @@ class TelegramRepository extends CustomRepository
 
     public function sendMessage($chatId, $message) {
         $telegramBotToken = env('TELEGRAM_BOT_TOKEN');
-        $message = urlencode($message);
         $message = str_replace("<br />", "\n", $message);
+        $message = urlencode($message);
 
         try {
             file_get_contents("https://api.telegram.org/bot$telegramBotToken/sendMessage?chat_id=$chatId&parse_mode=html&text=" . $message);
@@ -35,6 +35,7 @@ class TelegramRepository extends CustomRepository
         if (!$telegramId) {
             return;
         }
+
         $this->sendMessage($telegramId, $message);
     }
 

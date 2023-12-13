@@ -146,6 +146,7 @@ class CategoryController extends Controller
                     'value' => function ($row) {
                         return ($row->parent) ? $row->parent->name : "";
                     },
+                    'filter' => false,
                 ],
 
                 [

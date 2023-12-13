@@ -4,7 +4,7 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     ID: <b>{{$category->id}}</b><br />
-                    Название категории: <b><a href="{{$category->name}}" target="_blank">{{$category->name}}</a></b><br />
+                    Название категории: <b>{{$category->name}}</b><br />
 
                     @if($category->parent)
                         Родительская категория: <b><a href="{{route('category.view', $category->parent->id)}}" target="_blank">{{$category->parent->name}}</a></b><br />

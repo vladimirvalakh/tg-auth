@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\DB;
  *
  * @package App\Models
  * @property int $id
- * @property string $url
- * @property string $city
+ * @property string $name
+ * @property int $parent_id
  */
 class Category extends Model
 {
@@ -21,30 +21,12 @@ class Category extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'url',
-        'city_id',
-        'address',
-        'phone1',
-        'phone2',
-        'email',
-        'email2',
-        'mail_domain',
-        'YmetricaId',
-        'VENYOOId',
-        'GMiframe1',
-        'GMiframe2',
-        'crm',
-        'crm_pass',
-        'crm_u',
+        'name',
+        'parent_id',
     ];
 
     public function sites() {
         return $this->hasMany('App\Site', 'cat_id');
-    }
-
-    public function location()
-    {
-        return $this->belongsTo('App\Models\City', 'city_id');
     }
 
     public static function categoriesList(): Array
@@ -52,9 +34,9 @@ class Category extends Model
         return DB::table('categories')->pluck('name', 'id')->toArray();
     }
 
-    public static function urlsList(): Array
+    public function parent()
     {
-        return DB::table('categories')->pluck('url', 'url')->toArray();
+        return $this->belongsTo('App\Models\Category', 'parent_id');
     }
 
     public static function namesList(): Array

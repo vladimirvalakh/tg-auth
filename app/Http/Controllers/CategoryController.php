@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-use Itstructure\GridView\Actions\Delete;
+use Itstructure\GridView\Actions\CustomHtmlTag;
 use Itstructure\GridView\Columns\ActionColumn;
 use Itstructure\GridView\DataProviders\EloquentDataProvider;
 use App\Models\Site;
@@ -42,28 +42,15 @@ class CategoryController extends Controller
     {
         return view('category/edit', [
             'category' => $category,
-            'cities' => City::citiesList(),
+            'categories' => Category::categoriesList(),
         ]);
     }
 
     public function update(Request $request, Category $category)
     {
         Category::find($category->id)->update([
-            'url' => $request->input('url'),
-            'city_id' => $request->input('city_id'),
-            'address' => $request->input('address'),
-            'phone1' => $request->input('phone1'),
-            'phone2' => $request->input('phone2'),
-            'email' => $request->input('email'),
-            'email2' => $request->input('email2'),
-            'mail_domain' => $request->input('mail_domain'),
-            'YmetricaId' => $request->input('YmetricaId'),
-            'VENYOOId' => $request->input('VENYOOId'),
-            'GMiframe1' => $request->input('GMiframe1'),
-            'GMiframe2' => $request->input('GMiframe2'),
-            'crm' => $request->input('crm'),
-            'crm_pass' => $request->input('crm_pass'),
-            'crm_u' => $request->input('crm_u'),
+            'name' => $request->input('name'),
+            'parent_id' => $request->input('parent_id'),
         ]);
 
         return Redirect::route('categories');
@@ -76,6 +63,49 @@ class CategoryController extends Controller
 
         return Redirect::route('categories');
     }
+
+
+    public function add()
+    {
+        $currentRole = auth()->user()->role;
+
+        $addCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
+
+        if (!$addCriteria) {
+            abort(403);
+        }
+
+        return view('category/add', [
+            'categories' => Category::categoriesList(),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $currentRole = auth()->user()->role;
+
+        $updateCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
+
+        if (!$updateCriteria) {
+            abort(403);
+        }
+
+        Category::create([
+            'name' => $request->input('name'),
+            'parent_id' => $request->input('parent_id'),
+        ]);
+
+        return Redirect::route('categories')->with('success','Категория добавлена.');
+    }
+
 
     public function list()
     {
@@ -111,59 +141,40 @@ class CategoryController extends Controller
                     ],
                 ],
                 [
-                    'attribute' => 'city_id',
-                    'label' => 'Город',
+                    'attribute' => 'parent_id',
+                    'label' => 'Родительская категория',
                     'value' => function ($row) {
-                        return ($row->location) ? $row->location->city : "";
+                        return ($row->parent) ? $row->parent->name : "";
                     },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'city_id', //for some reason works LIKE
-                        'data' => City::citiesList(),
-                    ],
-                    'htmlAttributes' => [
-                        'width' => '15%'
-                    ]
                 ],
+
                 [
-                    'attribute' => 'url',
-                    'label' => 'Сайт',
-                    'format' => 'html',
-                    'value' => function ($row) {
-                        return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
-                    },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'url',
-                        'data' => Category::urlsList(),
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class,
+                    'actionTypes' => [
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/category/' . $data->id . '/view';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-primary mb-1">Детали</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/category/' . $data->id . '/edit';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Редактировать</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/category/' . $data->id . '/destroy';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger mb-1">Удалить</button>',
+                        ],
                     ],
                 ],
-
-
-//                [
-//                    'label' => 'Действия',
-//                    'class' => ActionColumn::class,
-//                    'actionTypes' => [ // Required
-//                        'view' => function ($data) {
-//                            return '/category/' . $data->id . '/view';
-//                        },
-//                        'edit' => function ($data) {
-//                            return '/category/' . $data->id . '/edit';
-//                        },
-//                        [
-//                            'class' => Delete::class, // Required
-//                            'url' => function ($data) { // Optional
-//                                return '/category/' . $data->id . '/destroy';
-//                            },
-//                            'htmlAttributes' => [ // Optional
-//                                'onclick' => 'return window.confirm("Вы уверены, что хотите удалить?");'
-//                            ],
-//                        ],
-//                        'htmlAttributes' => [ // Html attributes for <img> tag.
-//                            'width' => '350',
-//                        ]
-//                    ],
-//                ],
             ],
         ];
 

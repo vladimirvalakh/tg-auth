@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/category/{category}/edit', [CategoryController::class, 'edit'])->name('category.edit');
     Route::get('/category/{category}/destroy', [CategoryController::class, 'destroy'])->name('category.destroy');
     Route::put('/category/{category}/update', [CategoryController::class, 'update'])->name('category.update');
+    Route::get('/category/add', [CategoryController::class, 'add'])->name('category.add');
+    Route::post('/category/store', [CategoryController::class, 'store'])->name('category.store');
 
     Route::get('/profile/{profile}/view', [ProfileController::class, 'view'])->name('profile.view');
     Route::get('/profiles', [ProfileController::class, 'list'])->name('profiles');

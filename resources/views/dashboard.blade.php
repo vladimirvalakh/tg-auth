@@ -15,6 +15,16 @@ use App\Models\Role;
 
                 @endif
 
+                @if(request()->route()->named('categories'))
+                    @if (auth()->user()->role && auth()->user()->role->slug === Role::ADMINISTRATOR_SLUG)
+                        <div class="container-fluid mt-3 mb-3">
+                            <div class="col-12 col-xl-4 pull-right">
+                                <a type="button" class="btn btn-primary" href="{{route('category.add')}}">Добавить категорию</a>
+                            </div>
+                        </div>
+                    @endif
+                @endif
+
                 <div class="p-6 text-gray-900 dashboard grid-dashboard">
                     {!! grid_view($gridData) !!}
                 </div>

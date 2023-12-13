@@ -4,7 +4,7 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div class="max-w-xl">
                     ID: <b>{{$site->id}}</b><br/>
-                    Категория: <b>{{$site->category->name}}</b><br/>
+                    Категория: <b>{{($site->category) ? $site->category->name : "Без категории"}}</b><br/>
                     URL: <b><a href="{{$site->url}}" target="_blank">{{$site->url}}</a></b><br/>
                     Город: <b>{{$site->location->city }}</b><br/>
                     Субъект РФ: <b>{{$site->location->subject_rf}}</b><br/>

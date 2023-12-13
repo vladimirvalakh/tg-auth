@@ -47,8 +47,11 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $viewCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
-            || $currentRole->slug == Role::OWNER_SLUG);
+        $viewCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$viewCriteria) {
             abort(403);
@@ -63,9 +66,11 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $viewCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
-            || $currentRole->slug == Role::ARENDATOR_SLUG
-            || $currentRole->slug == Role::OWNER_SLUG);
+        $viewCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$viewCriteria) {
             abort(403);
@@ -98,7 +103,11 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $addCriteria = ($currentRole->slug == Role::OWNER_SLUG || $currentRole->slug == Role::MODERATOR_SLUG);
+        $addCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$addCriteria) {
             abort(403);
@@ -116,8 +125,11 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $updateCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
-            || $currentRole->slug == Role::OWNER_SLUG);
+        $updateCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$updateCriteria) {
             abort(403);
@@ -158,19 +170,21 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $updateCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
-            || $currentRole->slug == Role::OWNER_SLUG);
+        $updateCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$updateCriteria) {
             abort(403);
         }
 
-        $categories = DB::table('categories')->pluck('name', 'id')->toArray();
         $cities = DB::table('cities')->pluck('city', 'id')->toArray();
 
         return view('site/edit', [
             'site' => $site,
-            'categories' => $categories,
+            'categories' => Category::categoriesList(),
             'cities' => $cities,
         ]);
     }
@@ -179,8 +193,11 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $updateCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
-        || $currentRole->slug == Role::OWNER_SLUG);
+        $updateCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$updateCriteria) {
             abort(403);
@@ -216,8 +233,11 @@ class HomeController extends Controller
     {
         $currentRole = auth()->user()->role;
 
-        $deleteCriteria = ($currentRole->slug == Role::MODERATOR_SLUG
-            || $currentRole->slug == Role::OWNER_SLUG);
+        $deleteCriteria = (
+            $currentRole->slug == Role::MODERATOR_SLUG ||
+            $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ADMINISTRATOR_SLUG
+        );
 
         if (!$deleteCriteria) {
             abort(403);
@@ -226,7 +246,7 @@ class HomeController extends Controller
         $site = Site::findOrFail($site->id);
         $site->delete();
 
-        return Redirect::to('/');
+        return Redirect::to('/')->with('success','Сайт удалён.');
     }
 
     public function sites()
@@ -489,7 +509,7 @@ class HomeController extends Controller
                     'attribute' => 'cat_id',
                     'label' => 'Категория',
                     'value' => function ($row) {
-                        return $row->category->name;
+                        return ($row->category) ? $row->category->name : "";
                     },
                     'filter' => [
                         'class' => DropdownFilter::class,

@@ -137,10 +137,9 @@ use App\Models\Role;
                 @endif
 
                 @if($currentRoleSlug === Role::ADMINISTRATOR_SLUG)
-                    {{--                <li class="nav-item @if (request()->routeIs('categories')) active @endif">--}}
-                    {{--                    <a class="nav-link" href="{{route('categories')}}">Категории</a>--}}
-                    {{--                </li>--}}
-
+                    <li class="nav-item @if (request()->routeIs('categories')) active @endif">
+                        <a class="nav-link" href="{{route('categories')}}">Категории</a>
+                    </li>
                     <li class="nav-item @if (request()->routeIs('profiles')) active @endif">
                         <a class="nav-link" href="{{route('profiles')}}">Пользователи</a>
                     </li>

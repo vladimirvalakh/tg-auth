@@ -11,7 +11,7 @@
                             <label for="cat_id" class="col-sm-2 col-form-label">Категория</label>
                             <div class="col-sm-10">
                                 <select name="cat_id" class="form-control" id="cat_id" required>
-                                    <option>Выберите из списка</option>
+                                    <option value="0">Без категории</option>
                                     @foreach($categories as $key => $name)
                                         <option value="{{ $key }}"
                                                 @if ($key == old('cat_id', $site->cat_id))

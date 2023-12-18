@@ -50,6 +50,7 @@ class HomeController extends Controller
         $viewCriteria = (
             $currentRole->slug == Role::MODERATOR_SLUG ||
             $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ARENDATOR_SLUG ||
             $currentRole->slug == Role::ADMINISTRATOR_SLUG
         );
 
@@ -69,6 +70,7 @@ class HomeController extends Controller
         $viewCriteria = (
             $currentRole->slug == Role::MODERATOR_SLUG ||
             $currentRole->slug == Role::OWNER_SLUG ||
+            $currentRole->slug == Role::ARENDATOR_SLUG ||
             $currentRole->slug == Role::ADMINISTRATOR_SLUG
         );
 
@@ -135,10 +137,16 @@ class HomeController extends Controller
             abort(403);
         }
 
+        if ($request->input('last_month_orders_count') < 5) {
+            return Redirect::route('sites')->with('error','К сожалению, ваш канал будет очень сложно сдать в аренду. Попробуйте увеличить количество заявок и оставить заявку заново.');
+        }
+
         $site = Site::create([
             'cat_id' => $request->input('cat_id'),
             'url' => $request->input('url'),
             'city_id' => $request->input('city_id'),
+            'comment' => $request->input('comment'),
+            'last_month_orders_count' => $request->input('last_month_orders_count'),
             'address' => $request->input('address'),
             'phone1' => $request->input('phone1'),
             'phone2' => $request->input('phone2'),
@@ -207,6 +215,8 @@ class HomeController extends Controller
             'cat_id' => $request->input('cat_id'),
             'url' => $request->input('url'),
             'city_id' => $request->input('city_id'),
+            'comment' => $request->input('comment'),
+            'last_month_orders_count' => $request->input('last_month_orders_count'),
             'address' => $request->input('address'),
             'phone1' => $request->input('phone1'),
             'phone2' => $request->input('phone2'),

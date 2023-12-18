@@ -58,6 +58,15 @@
                             </div>
                         </div>
 
+
+
+                        <div class="form-group row">
+                            <label for="last_month_orders_count" class="col-sm-2 col-form-label">Количество заявок за последний месяц</label>
+                            <div class="col-sm-10">
+                                <input type="number" class="form-control" id="last_month_orders_count" name="last_month_orders_count" placeholder="" value="{{ old('last_month_orders_count', $site->last_month_orders_count) }}">
+                            </div>
+                        </div>
+
                         <div class="form-group row">
                             <label for="phone1" class="col-sm-2 col-form-label">Телефон</label>
                             <div class="col-sm-10">
@@ -83,6 +92,13 @@
                             <label for="email2" class="col-sm-2 col-form-label">Email 2</label>
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="email2" name="email2" value="{{ old('email2', $site->email2) }}">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="comment" class="col-sm-2 col-form-label">Комментарий</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="comment" name="comment" placeholder="" value="{{ old('comment', $site->comment) }}">
                             </div>
                         </div>
 

@@ -15,6 +15,7 @@ use App\Models\Rent;
  * @property int $id
  * @property string $url
  * @property integer $city_id
+ * @property int $last_month_orders_count
  * @property string $address
  * @property string $phone1,
  * @property string $phone2,
@@ -34,6 +35,8 @@ class Site extends Model
     protected $fillable = [
         'url',
         'city_id',
+        'comment',
+        'last_month_orders_count',
         'cat_id',
         'address',
         'phone1',

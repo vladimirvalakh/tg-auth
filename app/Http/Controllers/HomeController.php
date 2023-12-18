@@ -380,7 +380,7 @@ class HomeController extends Controller
                 ],
                 [
                     'attribute' => 'rent_p90',
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($data) {
                         $value = $data->getCountOrdersFor91days();
                         $class = ($data->rent_status == Rent::ON_RENT_STATUS) ? "text-muted" : "";
@@ -475,6 +475,18 @@ class HomeController extends Controller
 
             'columnFields' => [
                 [
+                    'attribute' => 'cat_id',
+                    'label' => 'Категория',
+                    'value' => function ($row) {
+                        return ($row->category) ? $row->category->name : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
+                        'data' => Category::categoriesList(),
+                    ],
+                ],
+                [
                     'label' => 'Субъект РФ',
                     'format' => 'html',
                     'filter' => false,
@@ -494,14 +506,6 @@ class HomeController extends Controller
                         'data' => City::citiesList(),
                     ],
                 ],
-//                [
-//                    'label' => 'site_id',
-//                    'format' => 'html',
-//                    'filter' => false,
-//                    'value' => function ($row) {
-//                        return ($row->id) ? $row->id : "";
-//                    },
-//                ],
                 [
                     'attribute' => 'url',
                     'label' => 'Сайт',
@@ -515,18 +519,7 @@ class HomeController extends Controller
                         'data' => Site::urlsList(),
                     ],
                 ],
-                [
-                    'attribute' => 'cat_id',
-                    'label' => 'Категория',
-                    'value' => function ($row) {
-                        return ($row->category) ? $row->category->name : "";
-                    },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
-                        'data' => Category::categoriesList(),
-                    ],
-                ],
+
                 [
                     'label' => 'Статус аренды',
                     'format' => 'html',
@@ -546,7 +539,7 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($row) {
                         $value = $row->getCountOrdersFor91days();
                         return "<span class='rent_p90' data-site-id='". $row->id ."'>" . $value . "</span>";
@@ -623,6 +616,18 @@ class HomeController extends Controller
 
             'columnFields' => [
                 [
+                    'attribute' => 'cat_id',
+                    'label' => 'Категория',
+                    'value' => function ($row) {
+                        return $row->category->name;
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
+                        'data' => Category::categoriesList(),
+                    ],
+                ],
+                [
                     'label' => 'Субъект РФ',
                     'format' => 'html',
                     'filter' => false,
@@ -655,18 +660,7 @@ class HomeController extends Controller
                         'data' => Site::urlsList(),
                     ],
                 ],
-                [
-                    'attribute' => 'cat_id',
-                    'label' => 'Категория',
-                    'value' => function ($row) {
-                        return $row->category->name;
-                    },
-                    'filter' => [
-                        'class' => DropdownFilter::class,
-                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
-                        'data' => Category::categoriesList(),
-                    ],
-                ],
+
                 [
                     'label' => 'Статус аренды',
                     'format' => 'html',
@@ -686,7 +680,7 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($row) {
                         $value = $row->getCountOrdersFor91days();
                         return "<span class='rent_p90' data-site-id='". $row->id ."'>" . $value . "</span>";

@@ -9,14 +9,14 @@
                         <div class="form-group row">
                             <label for="phone" class="col-sm-4 col-form-label">Телефон</label>
                             <div class="col-sm-8">
-                                <input required type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}"  class="form-control input-phone-field" id="phone" name="phone">
+                                <input required type="tel" placeholder="Введите номер телефона в формате +7 9×× ××× ××××" pattern="+7 9[0-9]{2} [0-9]{3} [0-9]{4}"  class="form-control input-phone-field" id="phone" name="phone">
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label for="viber" class="col-sm-4 col-form-label">Whatsapp / Viber</label>
                             <div class="col-sm-8">
-                                <input type="tel" placeholder="Введите номер телефона в формате 888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" class="form-control" id="viber" name="viber">
+                                <input type="tel" placeholder="Введите номер телефона в формате +7 9×× ××× ××××" pattern="+7 9[0-9]{2} [0-9]{3} [0-9]{4}" class="form-control" id="viber" name="viber">
                             </div>
                         </div>
 

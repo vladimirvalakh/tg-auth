@@ -289,7 +289,7 @@ class OrderController extends Controller
 //                ],
                 [
                     'attribute' => 'rent_p90',
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($row) {
                         return ($row->rent_p90) ? $row->rent_p90 : '';
                     },
@@ -450,7 +450,7 @@ class OrderController extends Controller
 //                    'filter' => false,
 //                ],
                 [
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($row) {
                         return ($row->rent_p90) ? $row->rent_p90 : '';
                     },
@@ -616,7 +616,7 @@ class OrderController extends Controller
 //                    'filter' => false,
 //                ],
                 [
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($row) {
                         return ($row->rent_p90) ? $row->rent_p90 : '';
                     },
@@ -758,7 +758,7 @@ class OrderController extends Controller
 //                    'filter' => false,
 //                ],
                 [
-                    'label' => 'Заявок 3 мес',
+                    'label' => 'Лидов 3 мес',
                     'value' => function ($row) {
                         return ($row->rent_p90) ? $row->rent_p90 : '';
                     },

@@ -90,51 +90,12 @@ use App\Models\Role;
 
         $('#grid_view_reset_button').hide();
 
-        $(".input-phone-field").on("input", function(e) {
-            console.log('ada');
-            let cursorPos = e.target.selectionStart
-            let formatInput = autoFormatPhoneNumber(e.target)
-            e.target.value = String(formatInput)
-            let isBackspace = (e?.data==null) ? true: false
-            let nextCusPos = nextDigit(formatInput, cursorPos, isBackspace)
-
-            this.setSelectionRange(nextCusPos+1, nextCusPos+1);
-        });
-
-        function autoFormatPhoneNumber(ref) {
-            try {
-                let phoneNumberString = ref.value
-                let cleaned = ("" + phoneNumberString).replace(/\D/g, "");
-                let match = cleaned.match(/^(\d{0,3})?(\d{0,3})?(\d{0,4})?/);
-                return [
-                    match[1],
-                    match[2] ? " " : "",
-                    match[2],
-                    match[3] ? " " : "",
-                    match[3]].join("")
-
-            } catch(err) {
-                return "";
-            }
+        function phoneMask() {
+            let num = $(this).val().replace(/\D/g,'');
+            $(this).val('+7 9' + num.substring(2,4) + ' ' + num.substring(4,7) + ' ' + num.substring(7,11));
         }
 
-        function nextDigit(input, cursorpos, isBackspace) {
-            if (isBackspace){
-                for (let i = cursorpos-1; i > 0; i--) {
-                    if(/\d/.test(input[i])){
-                        return i
-                    }
-                }
-            } else {
-                for (let i = cursorpos-1; i < input.length; i++) {
-                    if(/\d/.test(input[i])){
-                        return i
-                    }
-                }
-            }
-
-            return cursorpos
-        }
+        $('.input-phone-field').keyup(phoneMask);
     </script>
 
 </html>

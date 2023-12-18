@@ -35,8 +35,8 @@ $bankCards = json_decode($user->bank_cards, true);
         </div>
 
         <div class="form-group">
-            <x-input-label for="phone" value="Телефон (в формате 888 888 8888)" />
-            <x-text-input id="phone" name="phone" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" type="text" class="form-control mt-1 block w-full input-phone-field" :value="old('phone', $user->phone)" autofocus autocomplete="phone" />
+            <x-input-label for="phone" value="Телефон (в формате +7 9×× ××× ××××)" />
+            <x-text-input id="phone" name="phone" pattern="+7 9[0-9]{2} [0-9]{3} [0-9]{4}" type="text" class="form-control mt-1 block w-full input-phone-field" :value="old('phone', $user->phone)" autofocus autocomplete="phone" />
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 

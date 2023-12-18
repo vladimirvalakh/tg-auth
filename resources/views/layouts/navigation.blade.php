@@ -129,8 +129,7 @@ use App\Models\Role;
                     </li>
                 @endif
 
-                @if($currentRoleSlug === Role::OWNER_SLUG
-                    || $currentRoleSlug === Role::ADMINISTRATOR_SLUG)
+                @if($currentRoleSlug === Role::ADMINISTRATOR_SLUG)
                     <li class="nav-item @if (request()->routeIs('sites')) active @endif">
                         <a class="nav-link" href="{{route('sites')}}">Сайты</a>
                     </li>

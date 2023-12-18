@@ -8,8 +8,10 @@ use App\Models\Role;
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 @if (auth()->user()->role && auth()->user()->role->slug === Role::OWNER_SLUG)
                     <div class="container-fluid mt-3 mb-3">
-                        <div class="col-12 col-xl-4 pull-right">
+                        <div class="col-12">
                             <a type="button" class="btn btn-primary" href="{{route('site.add')}}">Добавить сайт</a>
+                            <a type="button" class="btn btn-primary" href="{{route('sites')}}">Мои сайты</a>
+                            <a type="button" class="btn btn-primary float-right" href="{{route('sites')}}">Техподдержка</a>
                         </div>
                     </div>
 
@@ -110,7 +112,7 @@ use App\Models\Role;
     $('.rent_p30').parent('td').css({
         'width':'190px',
     });
-    $('.rent_p30').append('  <button type="button" class="btn btn-sm btn-outline-danger show-p30 float-right mr-2">Посмотреть заявки</button>');
+    $('.rent_p30').append('  <button type="button" class="btn btn-sm btn-outline-danger show-p30 float-right mr-2">Посмотреть лиды</button>');
 
     $('.last_10_orders').append('  <button type="button" class="btn btn-block btn-sm btn-outline-danger show-last-10-orders">Показать</button>');
 
@@ -157,50 +159,11 @@ use App\Models\Role;
         $("#let-me-know-modal").modal('show');
     });
 
-    $(".input-phone-field").on("input", function(e) {
-        console.log('ada');
-        let cursorPos = e.target.selectionStart
-        let formatInput = autoFormatPhoneNumber(e.target)
-        e.target.value = String(formatInput)
-        let isBackspace = (e?.data==null) ? true: false
-        let nextCusPos = nextDigit(formatInput, cursorPos, isBackspace)
-
-        this.setSelectionRange(nextCusPos+1, nextCusPos+1);
-    });
-
-    function autoFormatPhoneNumber(ref) {
-        try {
-            let phoneNumberString = ref.value
-            let cleaned = ("" + phoneNumberString).replace(/\D/g, "");
-            let match = cleaned.match(/^(\d{0,3})?(\d{0,3})?(\d{0,4})?/);
-            return [
-                match[1],
-                match[2] ? " " : "",
-                match[2],
-               match[3] ? " " : "",
-                match[3]].join("")
-
-        } catch(err) {
-            return "";
-        }
+    function phoneMask() {
+        let num = $(this).val().replace(/\D/g,'');
+        $(this).val('+7 9' + num.substring(2,4) + ' ' + num.substring(4,7) + ' ' + num.substring(7,11));
     }
 
-    function nextDigit(input, cursorpos, isBackspace) {
-        if (isBackspace){
-            for (let i = cursorpos-1; i > 0; i--) {
-                if(/\d/.test(input[i])){
-                    return i
-                }
-            }
-        } else {
-            for (let i = cursorpos-1; i < input.length; i++) {
-                if(/\d/.test(input[i])){
-                    return i
-                }
-            }
-        }
-
-        return cursorpos
-    }
+    $('.input-phone-field').keyup(phoneMask);
 
 </script>

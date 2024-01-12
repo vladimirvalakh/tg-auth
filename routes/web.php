@@ -26,6 +26,8 @@ Route::get('/auth/telegram', [ProfileController::class, 'telegram'])->name('auth
 
 
 Route::get('/', [HomeController::class, 'sites'])->name('sites')->middleware(['auth', 'verified']);
+Route::get('/support', [HomeController::class, 'support'])->name('support');
+Route::post('/support', [HomeController::class, 'sendSupport'])->name('support.send');
 Route::get('/test/send-mail', [TestController::class, 'sendMail'])->name('test.send-mail');
 Route::get('/categories', [CategoryController::class, 'list'])->name('categories')->middleware(['auth', 'verified']);
 Route::get('/roles', [HomeController::class, 'roles'])->name('roles')->middleware(['auth', 'verified']);

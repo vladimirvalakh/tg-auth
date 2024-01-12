@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\View\View;
 use Itstructure\GridView\Actions\Button;
 use Itstructure\GridView\Actions\CustomHtmlTag;
 use Itstructure\GridView\Columns\ActionColumn;
@@ -19,6 +20,7 @@ use Illuminate\Support\Str;
 use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Itstructure\GridView\Filters\DropdownFilter;
+use App\Services\NotificationService;
 
 class HomeController extends Controller
 {
@@ -41,6 +43,25 @@ class HomeController extends Controller
         }
 
         return parent::callAction($method, $parameters);
+    }
+
+    public function support(): View
+    {
+        return view('support');
+    }
+
+    public function sendSupport(Request $request, NotificationService $notificationService){
+        $to_email = "support@lead-mart.ru";
+        $to_name = "ЛидМаркет.рф";
+        $from_email = "service@lead-mart.ru";
+        $from_name = $request->input('name');
+        $subject = $request->input('subject');
+
+        $email_message = $request->input('message');
+
+        $notificationService->sendEmail($to_email, $to_name, $from_email, $from_name, $subject, $email_message);
+
+        return back()->with('success', 'Отправлено!');
     }
 
     public function siteView(Site $site)

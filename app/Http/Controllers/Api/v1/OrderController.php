@@ -89,7 +89,7 @@ class OrderController extends BaseController
             ], 403);
         }
 
-        if ($token !== 'ZWxtOkRlcjMhW2xqNmlLWmNuZmUxXg==') {
+        if ($token !== env('API_KEY')) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Доступ запрещён! Токен авторизации не корректный'

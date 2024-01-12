@@ -1,3 +1,6 @@
+<?php
+    $apiKey = env('API_KEY');
+?>
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
@@ -11,7 +14,7 @@
                     Method: <code>POST</code> / HTTP/1.1<br />
                     Host: <code>{{config('app.url')}}/api/v1/order/send</code><br />
                     Content-Type: <code>application/x-www-form-urlencoded</code><br />
-                    Authorization Token: <code>Bearer ZWxtOkRlcjMhW2xqNmlLWmNuZmUxXg==</code><br /><br>
+                    Authorization Token: <code>Bearer <em>token</em></code> (секретный токен доступа можно скопировать <a href="{{route('profile.edit')}}" target="_blank">на своей странице профиля</a> в поле "API ключ")<br /><br>
                     BODY:<br />
                     обязательные параметры:<br />
                     <code>site_id</code> - код сайта (посмотреть можно в списке сайтов по кнопке "Детали")<br />

@@ -79,6 +79,21 @@ $bankCards = json_decode($user->bank_cards, true);
             <x-text-input id="role" name="role" type="text" disabled class="form-control mt-1 block w-full" :value="old('role', $user->role->name)" />
         </div>
         @endif
+        <hr />
+
+        <div class="form-row">
+            <div class="col-2">
+                <x-input-label for="api_key" value="API ключ" class="mt-2"/>
+            </div>
+            <div class="col-8">
+                <x-text-input id="api_key" name="api_key" type="text" disabled class="form-control mt-1 block w-full" value="{{Str::mask(env('API_KEY'), '*', 20)}}" />
+            </div>
+            <div class="col-2">
+                <button class="btn btn-md btn-primary mt-1" id="api_key_copy_button" type="button" onclick="copyApiKey()">Копировать</button>
+            </div>
+        </div>
+
+        <hr />
 
         <div class="form-group flex items-center gap-4">
             <button class="btn btn-md btn-primary" type="submit">Сохранить</button>
@@ -95,3 +110,14 @@ $bankCards = json_decode($user->bank_cards, true);
         </div>
     </form>
 </section>
+
+<script>
+    function copyApiKey() {
+        let apiKey = '{{env('API_KEY')}}';
+        navigator.clipboard.writeText(apiKey).then(() => {
+            alert("ключ скопирован в буфер обмена");
+        },() => {
+            alert("ошибка: не удалось скопировать ключ в буфер обмена");
+        });
+    }
+</script>

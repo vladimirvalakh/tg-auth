@@ -11,6 +11,10 @@ use App\Models\Role;
                         <div class="col-12">
                             <a type="button" class="btn btn-primary" href="{{route('site.add')}}">Добавить сайт</a>
                             <a type="button" class="btn btn-primary" href="{{route('sites')}}">Мои сайты</a>
+                            <a type="button" class="btn btn-primary" href="{{route('orders')}}">Мои лиды</a>
+                            <a type="button" class="btn btn-primary" href="{{route('order.add')}}">Отправить лид</a>
+                            <a type="button" class="btn btn-primary" href="#" disabled>Добавить лид по API</a>
+
                             <a type="button" class="btn btn-primary float-right" href="{{route('support')}}">Техподдержка</a>
                         </div>
                     </div>

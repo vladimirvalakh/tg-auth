@@ -150,6 +150,22 @@ use App\Models\Role;
             </ul>
 
             <ul class="navbar-nav">
+                @if($currentRoleSlug === Role::OWNER_SLUG)
+                    <li class="nav-item">
+                        <a type="button" class="btn mt-1 mr-3" href="#">Баланс:<br /> <b>0</b> р.</a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a type="button" class="btn mt-1 mr-3" href="#">Холд:<br /> <b>0</b> р.</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a type="button" class="btn btn-primary mt-3 mr-3" href="#">Вывести деньги</a>
+                    </li>
+                @endif
+
+
                 @auth
                     <li class="nav-item dropdown" id="account_navbar_menu">
                         <a class="nav-link dropdown-toggle"

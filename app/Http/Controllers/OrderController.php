@@ -85,6 +85,21 @@ class OrderController extends Controller
         ]);
     }
 
+    public function leads()
+    {
+        $currentRole = auth()->user()->role;
+        $dataProvider = new EloquentDataProvider(Site::query());
+
+        if ($currentRole->slug === Role::ARENDATOR_SLUG) {
+            $gridData = $this->getMyLeads();
+        }
+
+        return view('dashboard', [
+            'dataProvider' => $dataProvider,
+            'gridData' => $gridData,
+        ]);
+    }
+
     public function add()
     {
         $currentRole = auth()->user()->role;
@@ -182,6 +197,173 @@ class OrderController extends Controller
         ]);
 
         return Redirect::route('orders')->with('success','Заявка успешно обновлена.');
+    }
+
+
+
+    /**
+     * ARENDATOR DASHBOARD
+     */
+    private function getMyLeads(): array
+    {
+        $sites =  Site::select(
+            'sites.id as site_id',
+            'sites.city_id as sites_city_id',
+            'orders.city_id as city_id',
+            'orders.rental_period_up_to',
+            'orders.id as order_id',
+            'orders.source',
+            'cities.id as cities_id',
+            'url',
+            'cat_id',
+            'rents.status as rent_status',
+            'rents.p90 as rent_p90',
+            'rents.p30 as rent_p30',
+            'rents.period as rent_period',
+            'cities.rental_price_per_month as rental_price_per_month'
+        )->whereIn('sites.city_id', json_decode(auth()->user()->cities, true))
+            ->join('rents', 'rents.site_id', '=', 'sites.id')
+            ->join('orders', 'orders.site_id', '=', 'sites.id')
+            ->join('cities', 'orders.city_id', '=', 'cities.id')
+            ->where('rents.user_id', auth()->user()->id);
+
+        $dataProvider = new EloquentDataProvider($sites);
+
+        return [
+            'dataProvider' => $dataProvider,
+            'paginatorOptions' => [
+                'pageName' => 'p'
+            ],
+            'rowsPerPage' => 100,
+            'use_filters' => true,
+            'strictFilters' => true,
+            'useSendButtonAnyway' => false,
+            'searchButtonLabel' => 'Поиск',
+            'resetButtonLabel' => 'Сброс',
+
+            'columnFields' => [
+                [
+                    'attribute' => 'site_id',
+                    'label' => 'ID сайта',
+                    'filter' => false,
+                ],
+                [
+                    'attribute' => 'subject_rf',
+                    'label' => 'Субъект РФ',
+                    'format' => 'html',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->subject_rf : "";
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'attribute' => 'city_id',
+                    'label' => 'Город',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->city : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'orders.city_id',
+                        'data' => City::userCitiesList(),
+                    ],
+                ],
+                [
+                    'label' => 'Сайт',
+                    'format' => 'html',
+                    'value' => function ($row) {
+                        return "<a href='http://" . $row->url . "' target='_blank' >" . $row->url . "</a>";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'url',
+                        'data' => Site::urlsList(),
+                    ],
+                ],
+                [
+                    'attribute' => 'rent_status',
+                    'label' => 'Статус аренды',
+                    'format' => 'html',
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'rents.status',
+                        'data' => DB::table('rents')->pluck('status', 'status')->toArray()
+                    ],
+                    'value' => function ($row) {
+                        $class = ($row->rent_status == Rent::ON_RENT_STATUS) ? "text-success" : "";
+                        return "<span class='". $class ."'>" . $row->rent_status . "</span>";
+                    },
+                ],
+                [
+                    'attribute' => 'rental_period_up_to',
+                    'label' => 'Срок аренды до',
+                    'filter' => false,
+                ],
+//                [
+//                    'attribute' => 'source',
+//                    'label' => 'Источник заявок',
+//                    'filter' => false,
+//                ],
+                [
+                    'attribute' => 'rent_p90',
+                    'label' => 'Лидов 3 мес',
+                    'value' => function ($row) {
+                        return ($row->rent_p90) ? $row->rent_p90 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'attribute' => 'rent_p30',
+                    'label' => 'Заявок 30 дней',
+                    'value' => function ($row) {
+                        return ($row->rent_p30) ? $row->rent_p30 : '';
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'attribute' => 'rental_price_per_month',
+                    'label' => 'Цена аренды за месяц',
+                    'value' => function ($row) {
+                        return ($row->location) ? $row->location->rental_price_per_month : "";
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Срок аренды',
+                    'value' => function ($row) {
+                        return ($row->rent_period) ? $row->rent_period : "";
+                    },
+                    'filter' => false,
+                ],
+                [
+                    'label' => 'Действия',
+                    'class' => ActionColumn::class, // Required
+                    'actionTypes' => [
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/site/' . $data->site_id . '/data';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block  btn-success rent-site-modal-button mb-1">Продлить аренду</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/order/' . $data->order_id . '/edit';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-warning mb-1">Обновить контакты</button>',
+                        ],
+                        [
+                            'class' => CustomHtmlTag::class,
+                            'url' => function ($data) {
+                                return '/order/' . $data->order_id . '/destroy';
+                            },
+                            'htmlAttributes' => '<button type="button" class="btn btn-block btn-danger delete-order">Прекратить аренду</button>',
+                        ],
+                    ],
+                ],
+            ],
+        ];
     }
 
     /**

@@ -381,6 +381,18 @@ class HomeController extends Controller
                     'filter' => false,
                 ],
                 [
+                    'attribute' => 'cat_id',
+                    'label' => 'Категория',
+                    'value' => function ($row) {
+                        return ($row->category) ? $row->category->name : "";
+                    },
+                    'filter' => [
+                        'class' => DropdownFilter::class,
+                        'name' => 'cat_id', // REQUIRED if 'attribute' is not defined for column.
+                        'data' => Category::categoriesList(),
+                    ],
+                ],
+                [
                     'attribute' => 'city_id',
                     'format' => 'html',
                     'label' => 'Город',

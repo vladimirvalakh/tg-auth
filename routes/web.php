@@ -64,6 +64,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('profile/first-screen-update', [ProfileController::class, 'firstScreenUpdate'])->name('profile.first.screen.update');
 
     Route::get('/orders', [OrderController::class, 'list'])->name('orders');
+    Route::get('/leads', [OrderController::class, 'leads'])->name('leads');
     Route::get('/order/{order}/edit', [OrderController::class, 'edit'])->name('order.edit');
     Route::put('/order/{order}/update', [OrderController::class, 'update'])->name('order.update');
     Route::post('/order/{order}/destroy', [OrderController::class, 'destroy'])->name('order.destroy');

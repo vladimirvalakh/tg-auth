@@ -18,7 +18,6 @@ use App\Models\Role;
                             <a type="button" class="btn btn-primary float-right" href="{{route('support')}}">Техподдержка</a>
                         </div>
                     </div>
-
                 @endif
 
                 @if(request()->route()->named('categories'))
@@ -67,7 +66,12 @@ use App\Models\Role;
     let countRecords = $('.grid-dashboard').find('table').find('tr').length - 3;
 
     if (countRecords < 1) {
-        $('.grid-dashboard').html('<div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 offset-lg-2 offset-md-1 float-md-center"><div class="jumbotron text-center">Нет доступных для аренды сайтов</div></div>');
+        @if (request()->routeIs('leads'))
+            $('.grid-dashboard').html('<div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 offset-lg-2 offset-md-1 float-md-center"><div class="jumbotron text-center">Заявок нет</div></div>');
+
+        @else
+            $('.grid-dashboard').html('<div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 offset-lg-2 offset-md-1 float-md-center"><div class="jumbotron text-center">Нет доступных для аренды сайтов</div></div>');
+        @endif
     }
 
     $('.rent-site-modal-button').click(function(event){

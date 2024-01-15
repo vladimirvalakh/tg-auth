@@ -22,7 +22,25 @@ use App\Models\Role;
             {{--            </li>--}}
             {{--        </ul>--}}
 
+
             <ul class="navbar-nav">
+
+                @if($currentRoleSlug === Role::ARENDATOR_SLUG)
+                    <li class="nav-item">
+                        <a type="button" class="btn mt-1 mr-2" href="#">Баланс:<br /> <b>0</b> р.</a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a type="button" class="btn mt-1 mr-2" href="#">Заблокировано:<br /> <b>0</b> р.</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a type="button" class="btn btn-primary mt-3 mr-2" href="#">Пополнить счёт</a>
+                    </li>
+                @endif
+
+
                 @auth
                     <li class="nav-item dropdown" id="account_navbar_menu">
                         <a class="nav-link dropdown-toggle"
@@ -58,45 +76,30 @@ use App\Models\Role;
 
     <nav class="navbar navbar-light navbar-expand-md d-flex flex-column flex-md-row p-2 px-md-1 mb-3 pl-2 border-bottom shadow-sm arendator-menu">
         <div class="collapse navbar-collapse arendator-menu-container">
-            <ul class="navbar-nav mr-auto p-2">
-                @if($currentRoleSlug === Role::MODERATOR_SLUG)
-                    <li class="nav-item mr-1 @if (request()->routeIs('orders')) active @endif">
-                        <a class="nav-link" href="{{route('orders')}}">Заявки</a>
-                    </li>
-                    <li class="nav-item @if (request()->routeIs('sites')) active @endif">
-                        <a class="nav-link" href="{{route('sites')}}">Сайты</a>
-                    </li>
-                @endif
+            <ul class="navbar-nav mr-auto p-2 container-fluid col-12">
+                <div class="col-12">
+                    @if($currentRoleSlug === Role::ARENDATOR_SLUG)
+                        <a type="button" class="btn @if (request()->routeIs('sites')) btn-primary @endif" href="{{route('sites')}}">Все сайты</a>
+                        <a type="button" class="btn @if (request()->routeIs('orders')) btn-primary @endif" href="{{route('orders')}}">Мои сайты</a>
+                        <a type="button" class="btn @if (request()->routeIs('leads')) btn-primary @endif" href="{{route('leads')}}">Мои лиды</a>
+                        <a type="button" class="btn btn-primary float-right" href="{{route('support')}}">Техподдержка</a>
+                    @endif
 
-                @if($currentRoleSlug === Role::ARENDATOR_SLUG)
-                    <li class="nav-item mr-1 @if (request()->routeIs('sites')) active @endif">
-                        <a class="nav-link" href="{{route('sites')}}">Все сайты</a>
-                    </li>
-                    <li class="nav-item @if (request()->routeIs('orders')) active @endif">
-                        <a class="nav-link" href="{{route('orders')}}">Мои сайты</a>
-                    </li>
-                @endif
+                    @if($currentRoleSlug === Role::MODERATOR_SLUG)
+                        <a type="button" class="btn @if (request()->routeIs('orders')) btn-primary @endif" href="{{route('orders')}}">Заявки</a>
+                        <a type="button" class="btn @if (request()->routeIs('sites')) btn-primary @endif" href="{{route('sites')}}">Сайты</a>
+                    @endif
 
-                @if($currentRoleSlug === Role::OWNER_SLUG
-                    || $currentRoleSlug === Role::ADMINISTRATOR_SLUG)
-                    <li class="nav-item @if (request()->routeIs('sites')) active @endif">
-                        <a class="nav-link" href="{{route('sites')}}">Сайты</a>
-                    </li>
-                @endif
+                    @if($currentRoleSlug === Role::OWNER_SLUG || $currentRoleSlug === Role::ADMINISTRATOR_SLUG)
+                        <a type="button" class="btn @if (request()->routeIs('sites')) btn-primary @endif" href="{{route('sites')}}">Сайты</a>
+                    @endif
 
-                @if($currentRoleSlug === Role::ADMINISTRATOR_SLUG)
-                    {{--                <li class="nav-item @if (request()->routeIs('categories')) active @endif">--}}
-                    {{--                    <a class="nav-link" href="{{route('categories')}}">Категории</a>--}}
-                    {{--                </li>--}}
-
-                    <li class="nav-item @if (request()->routeIs('profiles')) active @endif">
-                        <a class="nav-link" href="{{route('profiles')}}">Пользователи</a>
-                    </li>
-
-                    <li class="nav-item @if (request()->routeIs('roles')) active @endif">
-                        <a class="nav-link" href="{{route('roles')}}">Роли</a>
-                    </li>
-                @endif
+                    @if($currentRoleSlug === Role::ADMINISTRATOR_SLUG)
+                            <a type="button" class="btn @if (request()->routeIs('categories')) btn-primary @endif" href="{{route('categories')}}">Категории</a>
+                            <a type="button" class="btn @if (request()->routeIs('profiles')) btn-primary @endif" href="{{route('profiles')}}">Пользователи</a>
+                            <a type="button" class="btn @if (request()->routeIs('roles')) btn-primary @endif" href="{{route('roles')}}">Роли</a>
+                    @endif
+                </div>
             </ul>
         </div>
     </nav>
@@ -117,15 +120,6 @@ use App\Models\Role;
                     </li>
                     <li class="nav-item @if (request()->routeIs('sites')) active @endif">
                         <a class="nav-link" href="{{route('sites')}}">Сайты</a>
-                    </li>
-                @endif
-
-                @if($currentRoleSlug === Role::ARENDATOR_SLUG)
-                    <li class="nav-item @if (request()->routeIs('sites')) active @endif">
-                        <a class="nav-link" href="{{route('sites')}}">Все сайты</a>
-                    </li>
-                    <li class="nav-item @if (request()->routeIs('orders')) active @endif">
-                        <a class="nav-link" href="{{route('orders')}}">Мои сайты</a>
                     </li>
                 @endif
 

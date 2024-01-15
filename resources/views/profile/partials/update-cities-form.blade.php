@@ -56,6 +56,8 @@ $regions = City::regionsList();
         $('#select-cities-top-form').children().remove().end();
     }
 
+    $("#select2-select-cities-top-form-container").children(":first").remove();
+
     $(document).ready(function () {
         let isGrid = document.getElementsByClassName('grid-dashboard').length;
 
@@ -92,5 +94,13 @@ $regions = City::regionsList();
             });
             $('#select-cities-top-form').html(cities);
         };
+    });
+
+    $('#select-cities-top-form').on('select2:select', function () {
+        if ($(this).val().includes('0')) {
+            $("#select-cities-top-form").find('option').not($(this)).prop("selected",true);
+            $("#select-cities-top-form").trigger('change');
+            $("#select2-select-cities-top-form-container").children(":first").remove();
+        }
     });
 </script>

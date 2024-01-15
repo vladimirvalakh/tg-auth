@@ -170,11 +170,25 @@ class ProfileController extends Controller
     {
         $user = User::findOrFail(Auth::id());
 
-        $user->cities = $request->get('cities');
+        $cities = $request->get('cities');
+
+        $this->deleteArrayItemByValue($cities, '0');
+        $user->cities = $cities;
 
         $user->save();
 
         return Redirect::route('sites')->with('status', 'city-updated');
+    }
+
+    private function deleteArrayItemByValue( &$array, $value )
+    {
+        foreach( $array as $key => $val ){
+            if( is_array($val) ){
+                $this->deleteArrayItemByValue($array[$key], $value);
+            }elseif( $val===$value ){
+                unset($array[$key]);
+            }
+        }
     }
 
     /**

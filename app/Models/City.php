@@ -44,7 +44,9 @@ class City extends Model
 
     public static function citiesList(): ?array
     {
-        return DB::table('cities')->orderBy('city')->pluck('city', 'id')->toArray();
+        $cities = DB::table('cities')->orderBy('population', 'DESC')->pluck('city', 'id')->toArray();
+        array_unshift($cities, 'Выбрать всё');
+        return $cities;
     }
 
     public static function userSubjectRFList(): ?array
@@ -52,7 +54,7 @@ class City extends Model
         if (empty(json_decode(auth()->user()->cities))) {
             return [];
         }
-        return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('city')->pluck('subject_rf', 'subject_rf')->toArray();
+        return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('population', 'DESC')->pluck('subject_rf', 'subject_rf')->toArray();
     }
 
     public static function userCitiesList(): ?array
@@ -60,18 +62,18 @@ class City extends Model
         if (empty(json_decode(auth()->user()->cities))) {
             return [];
         }
-        return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('city')->pluck('city', 'id')->toArray();
+        return DB::table('cities')->whereIn('id', json_decode(auth()->user()->cities))->orderBy('population', 'DESC')->pluck('city', 'id')->toArray();
     }
 
     public static function subjectsRfList(): ?array
     {
-        return DB::table('cities')->orderBy('subject_rf')->pluck('subject_rf', 'subject_rf')->toArray();
+        return DB::table('cities')->orderBy('population', 'DESC')->pluck('subject_rf', 'subject_rf')->toArray();
     }
 
     public static function regionsList(): ?array
     {
         $list = DB::table('cities')
-            ->orderBy('id')
+            ->orderBy('population', 'DESC')
             ->pluck('subject_rf', 'id')
             ->toArray();
 
@@ -84,11 +86,15 @@ class City extends Model
             ->select('subject_rf')
             ->first();
 
-        return DB::table('cities')
+        $cities =  DB::table('cities')
             ->where('subject_rf', $region->subject_rf)
-            ->orderBy('city')
+            ->orderBy('population', 'DESC')
             ->pluck('city', 'id')
             ->toArray();
+
+        array_unshift($cities, 'Выбрать всё');
+
+        return $cities;
     }
 
     public static function getCityIdByName(string $city)

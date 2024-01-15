@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class Tow
@@ -32,5 +33,16 @@ class Tow extends Model
     public static function getTowByTowID(string $towId)
     {
         return Tow::where('id', $towId)->value('tow');
+    }
+
+    public static function towList(bool $multiple = true): ?array
+    {
+        $tows = DB::table('tow')->orderBy('tow', 'ASC')->pluck('tow', 'id')->toArray();
+
+        if ($multiple) {
+            array_unshift($tows, 'Выбрать всё');
+        }
+
+        return $tows;
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Site;
 use App\Models\Order;
+use App\Models\Tow;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\User;
@@ -48,7 +49,6 @@ class OrderController extends Controller
         $data['user_id'] = Auth::id();
         $data['source'] = 'Создано владельцем сайта';
         $data['order_status'] = Order::ON_MODERATION_STATUS;
-        $data['info'] = '';
 
         Order::create($data);
 
@@ -57,7 +57,6 @@ class OrderController extends Controller
             $rent['status'] = Rent::ON_MODERATION_STATUS;
             $rent->save();
         }
-
 
         return Redirect::route('sites')->with('success','Заявка успешно создана, перейдите в <a href="'. route('orders') . '">личный кабинет</a> для управления.');
     }
@@ -111,7 +110,8 @@ class OrderController extends Controller
         }
 
         return view('order/add', [
-            'cities' => City::userCitiesList(),
+            'cities' => City::citiesList(false),
+            'tows' => Tow::towList(false),
         ]);
     }
 

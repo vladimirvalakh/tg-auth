@@ -7,24 +7,58 @@
                     @method('post')
                     <div class="max-w-xl">
                         <div class="form-group row">
-                            <label for="phone" class="col-sm-4 col-form-label">Телефон</label>
+                            <label for="city_id" class="col-sm-4 col-form-label">Город</label>
+                            <div class="col-sm-8">
+                                <select name="city_id" class="form-control" id="city_id">
+                                    @foreach($cities as $key => $city)
+                                        <option value="{{ $key }}">
+                                            {{ $city }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="tow_id" class="col-sm-4 col-form-label">Вид работ</label>
+                            <div class="col-sm-8">
+                                <select name="tow_id" class="form-control" id="tow_id">
+                                    @foreach($tows as $key => $tow)
+                                        <option value="{{ $key }}">
+                                            {{ $tow }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row">
+                            <label for="phone" class="col-sm-4 col-form-label">Номер телефона заявки</label>
                             <div class="col-sm-8">
                                 <input required type="tel" placeholder="Введите номер телефона в формате +7 9×× ××× ××××" pattern="+7 9[0-9]{2} [0-9]{3} [0-9]{4}"  class="form-control input-phone-field" id="phone" name="phone">
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <label for="viber" class="col-sm-4 col-form-label">Whatsapp / Viber</label>
-                            <div class="col-sm-8">
-                                <input type="tel" placeholder="Введите номер телефона в формате +7 9×× ××× ××××" pattern="+7 9[0-9]{2} [0-9]{3} [0-9]{4}" class="form-control" id="viber" name="viber">
-                            </div>
-                        </div>
+{{--                        <div class="form-group row">--}}
+{{--                            <label for="viber" class="col-sm-4 col-form-label">Whatsapp / Viber</label>--}}
+{{--                            <div class="col-sm-8">--}}
+{{--                                <input type="tel" placeholder="Введите номер телефона в формате +7 9×× ××× ××××" pattern="+7 9[0-9]{2} [0-9]{3} [0-9]{4}" class="form-control" id="viber" name="viber">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
 
 
+{{--                        <div class="form-group row">--}}
+{{--                            <label for="emails" class="col-sm-4 col-form-label">Email</label>--}}
+{{--                            <div class="col-sm-8">--}}
+{{--                                <input type="email" class="form-control" id="emails" name="emails">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+
                         <div class="form-group row">
-                            <label for="emails" class="col-sm-4 col-form-label">Email</label>
+                            <label for="info" class="col-sm-4 col-form-label">Дополнительная информация</label>
                             <div class="col-sm-8">
-                                <input type="email" class="form-control" id="emails" name="emails">
+                                <textarea class="form-control" id="info" name="info"></textarea>
                             </div>
                         </div>
 

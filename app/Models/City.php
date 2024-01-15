@@ -42,10 +42,14 @@ class City extends Model
         return $this->hasMany('App\Site', 'city_id');
     }
 
-    public static function citiesList(): ?array
+    public static function citiesList(bool $multiple = true): ?array
     {
         $cities = DB::table('cities')->orderBy('population', 'DESC')->pluck('city', 'id')->toArray();
-        array_unshift($cities, 'Выбрать всё');
+
+        if ($multiple) {
+            array_unshift($cities, 'Выбрать всё');
+        }
+
         return $cities;
     }
 

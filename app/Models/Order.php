@@ -33,6 +33,7 @@ class Order extends Model
         'date',
         'phone',
         'city_id',
+        'tow',
         'site_id',
         'user_id',
         'status',

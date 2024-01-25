@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\TelegramRepository;
+use App\Repositories\SiteRepository;
 use App\Repositories\UserRepository;
 
 
@@ -14,18 +16,46 @@ class TelegramService
 {
     private TelegramRepository $telegramRepository;
     private UserRepository $userRepository;
+    private SiteRepository $siteRepository;
 
     public function __construct(
         TelegramRepository $telegramRepository,
         UserRepository $userRepository,
+        SiteRepository $siteRepository,
     ) {
         $this->telegramRepository = $telegramRepository;
         $this->userRepository = $userRepository;
+        $this->siteRepository = $siteRepository;
     }
 
     public function sendToTelegramForUserId($userId, $message)
     {
-        $this->telegramRepository->sendMessageForUserId($userId, $message);
+        $buttons = ["remove_keyboard" => true];
+
+        $currentUser = $this->userRepository->getUser($userId);
+
+        $role = $currentUser->role->slug;
+
+        if ($role == Role::OWNER_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
+            $buttons = [
+                "keyboard" =>
+                    [
+                        [
+                            [ "text" => "Добавить сайт"],
+                            [ "text" => "Статистика"],
+                        ],
+                        [
+                            [ "text" => "Список добавленных сайтов"],
+                        ],
+                        [
+                            [ "text" => "Настройки профиля"],
+                            [ "text" => "Выплаты"]
+                        ]
+                    ]
+            ];
+        }
+
+        $this->sendToTelegramMessageWithButtonsForUserId($userId, $message, $buttons);
     }
 
     public function sendToTelegramMessageWithButtonsForUserId($user_id, $message, $buttons)
@@ -81,7 +111,7 @@ class TelegramService
                 $message .= "В результате успешного запроса заявка будет добавлена в таблицу статистики, в телеграмм и на емейл арендатора будет отправлено письмо с уведомлением.\n";
             }
 
-            if ($text == "/profile") {
+            if ($text == "/profile" || $text == "Настройки профиля") {
                 $currentUser = $this->userRepository->getUserByTelegramId($chatId);
                 $message = "Данные о пользователе: \n\n";
                 $message .= "<code>ID пользователя в системе:</code> " . $currentUser->id . "\n";
@@ -89,6 +119,38 @@ class TelegramService
                 $message .= "<code>Ф.И.O:</code> " . $currentUser->full_name . "\n";
                 $message .= "<code>Телефон:</code> " . $currentUser->phone . "\n";
                 $message .= "<code>Роль:</code> " . $currentUser->role->name . "\n";
+            }
+
+            if ($text == "Добавить сайт") {
+                $message = "Укажите данные для нового сайта в следующем формате:\n\n";
+                $message .= "Адрес сайта: http://адрес_сайта.ru,\n";
+                $message .= "Город: Москва,\n";
+                $message .= "Вид работ: Остекление коттеджей,\n";
+                $message .= "Номер телефона заявки: 8888 888 888,\n";
+                $message .= "Дополнительная информация: любой текст\n";
+            }
+
+            if ($text == "Список добавленных сайтов") {
+
+                $leads = $this->siteRepository->getAddedSitesOfUserId(Auth::id());
+
+                if (count($leads)) {
+                    $message = "Список добавленных сайтов:\n\n";
+
+                    foreach ($leads as $number => $lead) {
+                        $message .= $number + 1 . " - " . $lead->url . "\n";
+                    }
+                } else {
+                    $message  = "Вы ещё не добавили ни одного сайта\n\n";
+                }
+            }
+
+            if ($text == "Статистика") {
+                $message = "Вывод статистики пока не добавлен с систему \nПопробуйте повторить запрос позже\n";
+            }
+
+            if ($text == "Выплаты") {
+                $message = "Информация по выплатам пока не добавлена с систему \nПопробуйте повторить запрос позже\n";
             }
 
             if ($text == "/orders") {

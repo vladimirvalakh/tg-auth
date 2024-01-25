@@ -34,9 +34,19 @@ class TelegramController extends Controller
             $text = $telegram->Text();
             $chatId = $telegram->ChatID();
 
+
+//            $webhook = [
+//                ["message"]["text"] => $text,
+//                ["message"]["chat"]["id"] => $chatId
+//            ];
+
             $webhook = [
-                ["message"]["text"] => $text,
-                ["message"]["chat"]["id"] => $chatId
+                "message" => [
+                    "text" => $text,
+                    "chat" => [
+                        "id" => $chatId,
+                    ]
+                ]
             ];
 
             $this->telegramService->getTelegramWebhook($webhook);

@@ -17,4 +17,9 @@ class TowRepository extends CustomRepository
     {
         return Tow::find($towId)->value('tow');
     }
+
+    public function getTowIdByValue(string $towName): ?int
+    {
+        return Tow::where('tow', $towName)->value('id');
+    }
 }

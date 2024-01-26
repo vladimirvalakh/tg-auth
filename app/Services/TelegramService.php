@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Role;
+use App\Models\Rent;
+use App\Models\Site;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\TelegramRepository;
 use App\Repositories\SiteRepository;
+use App\Repositories\TowRepository;
+use App\Repositories\CategoryRepository;
+use App\Repositories\LocationRepository;
 use App\Repositories\UserRepository;
 
 
@@ -17,15 +22,24 @@ class TelegramService
     private TelegramRepository $telegramRepository;
     private UserRepository $userRepository;
     private SiteRepository $siteRepository;
+    private CategoryRepository $categoryRepository;
+    private TowRepository $towRepository;
+    private LocationRepository $locationRepository;
 
     public function __construct(
         TelegramRepository $telegramRepository,
         UserRepository $userRepository,
         SiteRepository $siteRepository,
+        CategoryRepository $categoryRepository,
+        TowRepository $towRepository,
+        LocationRepository $locationRepository,
     ) {
         $this->telegramRepository = $telegramRepository;
         $this->userRepository = $userRepository;
         $this->siteRepository = $siteRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->towRepository = $towRepository;
+        $this->locationRepository = $locationRepository;
     }
 
     public function sendToTelegramForUserId($userId, $message)
@@ -122,12 +136,25 @@ class TelegramService
             }
 
             if ($text == "Добавить сайт") {
-                $message = "Укажите данные для нового сайта в следующем формате:\n\n";
-                $message .= "Адрес сайта: http://адрес_сайта.ru,\n";
-                $message .= "Город: Москва,\n";
-                $message .= "Вид работ: Остекление коттеджей,\n";
-                $message .= "Номер телефона заявки: 8888 888 888,\n";
-                $message .= "Дополнительная информация: любой текст\n";
+                $message = "Укажите данные для нового сайта в следующем формате (через запятую):\n\n";
+
+                $message .= "Добавление сайта:\n";
+                $message .= "Город, Категория, Адрес сайта, Номер телефона заявки, Дополнительная информация,\n Количество заявок за последний месяц (должно быть не менее 5 заявок)\n\n";
+
+                $message .= "Например:\n\n";
+
+                $message .= "Добавление сайта:\n";
+                $message .= "Москва, Клининговые услуги, http://cleaning-services.ru, 8888 888 888, Перезвоните мне, 10\n";
+            }
+
+            if (str_contains($text, "Добавление сайта:")) {
+                if (is_int($this->parseForAddSite($text)) && $this->parseForAddSite($text) > 0) {
+                    $message = "Сайт успешно добавлен";
+                }
+
+                if (is_string($this->parseForAddSite($text))) {
+                    $message = $this->parseForAddSite($text);
+                }
             }
 
             if ($text == "Список добавленных сайтов") {
@@ -165,6 +192,83 @@ class TelegramService
 
             if (isset($message) && $message != '') {
                 $this->telegramRepository->sendMessage($chatId, $message);
+            }
+        }
+    }
+
+    private function parseForAddSite(string $text)
+    {
+        $data = explode(",", $text);
+        $site = [];
+
+        if (count($data) != 6) {
+            return "Неверный формат введённых данных. Проверьте количество и порядок введённых данных";
+        }
+
+        foreach ($data as $key => $value) {
+            if ($key == 0) {
+                $header = explode(":", $value);
+                $cityName = trim($header[1]);
+                $cityId = $this->locationRepository->getCityIdByName($cityName);
+
+                if (!$cityId) {
+                    return "Такого города нет в системе. Проверьте, пожалуйста, введённые данные";
+                }
+
+                $site['city_id'] = $cityId;
+            }
+            if ($key == 1) {
+                $categoryName = trim($value);
+                $categoryId = $this->categoryRepository->getCategoryIdByName($categoryName);
+
+                if (!$categoryId) {
+                    return "Такой категории нет в системе. Проверьте, пожалуйста, введённые данные";
+                }
+
+                $site['cat_id'] = $categoryId;
+            }
+            if ($key == 2) {
+                $site['url'] = trim($value);
+            }
+            if ($key == 3) {
+                $site['phone'] = trim($value);
+            }
+            if ($key == 4) {
+                $site['info'] = trim($value);
+            }
+            if ($key == 5) {
+                $site['last_month_orders_count'] = trim($value);
+            }
+        }
+
+        if (empty($site)) {
+            return 0;
+        } else {
+            if ($site['last_month_orders_count'] < 5) {
+                return "К сожалению, ваш канал будет очень сложно сдать в аренду. Попробуйте увеличить количество заявок и оставить заявку заново.";
+            }
+
+            $searchRecord = Site::where('cat_id', $site['cat_id'])
+                ->where('url', $site['url'])
+                ->where('city_id', $site['city_id'])
+                ->first();
+
+            if (!$searchRecord) {
+                $siteModel = Site::create([
+                    'cat_id' => $site['cat_id'],
+                    'url' =>  $site['url'],
+                    'city_id' => $site['city_id'],
+                    'comment' => $site['info'],
+                    'last_month_orders_count' => $site['last_month_orders_count'],
+                    'phone1' => $site['phone'],
+                ]);
+
+                Rent::create([
+                    'site_id' => $siteModel->id,
+                    'status' => Rent::IN_SEARCH_STATUS
+                ]);
+
+                return $siteModel->id;
             }
         }
     }

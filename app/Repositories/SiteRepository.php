@@ -20,7 +20,7 @@ class SiteRepository extends CustomRepository
     {
         return DB::table('sites')
             ->join('rents', 'rents.site_id', '=', 'sites.id')
-            ->select('sites.id','sites.url')
+            ->select('sites.id','sites.url', 'rents.status')
             ->where('rents.user_id', '=', $userId)
             ->where('rents.status', '=', Rent::ON_RENT_STATUS)
             ->get();

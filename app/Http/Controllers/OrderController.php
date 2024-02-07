@@ -140,6 +140,10 @@ class OrderController extends Controller
             abort(403);
         }
 
+        /**
+         * TODO: Change to use Order Repository - approve
+         *
+         */
         $order['order_status'] = Order::ON_RENT_STATUS;
         $order['rental_period_up_to'] = Carbon::create($order['date'])->addMonth();
         $order->save();

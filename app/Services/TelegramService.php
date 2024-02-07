@@ -42,6 +42,7 @@ class TelegramService
         $this->userRepository = $userRepository;
         $this->siteRepository = $siteRepository;
         $this->orderRepository = $orderRepository;
+        $this->orderRepository = $orderRepository;
         $this->categoryRepository = $categoryRepository;
         $this->towRepository = $towRepository;
         $this->locationRepository = $locationRepository;
@@ -99,6 +100,47 @@ class TelegramService
         Log::debug('NotificationService/getTelegramWebhook', [
             'webhook' => $webhook,
         ]);
+
+        //is callback query
+        if (!isset($webhook["message"])) {
+            Log::debug('NotificationService/getTelegramWebhook', [
+                'exception' => "Message is empty",
+                'webhook' => $webhook,
+            ]);
+
+            if (isset($webhook["callback_query"])) {
+                Log::debug('NotificationService/getTelegramWebhook', [
+                    'callback_data' => $webhook["callback_query"]["data"],
+                ]);
+            }
+
+            if (empty($webhook["callback_query"]["data"])) {
+                return;
+            }
+
+            $callbackData = $webhook["callback_query"]["data"];
+            $chatId = $webhook["callback_query"]["from"]["id"];
+
+            //approveOrder_
+            if (str_contains($callbackData, "approveOrder_")) {
+                $data = explode("_", $callbackData);
+                $orderId = $data[1];
+                $this->orderRepository->approve($orderId);
+                $this->telegramRepository->sendMessage($chatId, "Заявка одобрена");
+                return;
+            }
+
+            //declineOrder_
+            if (str_contains($callbackData, "declineOrder_")) {
+                $data = explode("_", $callbackData);
+                $orderId = $data[1];
+                $this->orderRepository->decline($orderId);
+                $this->telegramRepository->sendMessage($chatId, "Заявка отклонена");
+                return;
+            }
+
+            return;
+        }
 
         $text = $webhook["message"]["text"];
         $chatId = $webhook["message"]["chat"]["id"];
@@ -183,28 +225,37 @@ class TelegramService
             }
 
             if ($text == "Заявки на модерацию") {
-                $ordersForModeration = $this->orderRepository->getOrdersByStatus(Order::ON_MODERATION_STATUS);
+                $sitesForModeration = $this->siteRepository->getSitesByRentStatus(Rent::ON_MODERATION_STATUS);
 
-                if (count($ordersForModeration)) {
+                if (count($sitesForModeration)) {
                     $this->telegramRepository->sendMessage($chatId, "Список заявок на модерацию:\n\n");
 
-                    foreach ($ordersForModeration as $number => $lead) {
-                        $inlineMessage = $number + 1 . " - " . $lead->site_url . "\n";
+                    foreach ($sitesForModeration as $number => $site) {
+                        $inlineMessage = $number + 1 . " - " . $site->site_url . "\n";
+
+                        if (!empty($site->rent_phone)) {
+                            $inlineMessage .= "Номер телефона - " . $site->rent_phone . "\n";
+                        }
+
+                        if (!empty($site->last_month_orders_count)) {
+                            $inlineMessage .= "Заявок за последний месяц - " . $site->last_month_orders_count . "\n";
+                        }
 
                         $inlineButtons = [
                             "inline_keyboard" => [
                                 [
                                     [ "text" => "Одобрить",
-                                        "callback_data" => "approveOrder" . $lead->order_id
+                                        "callback_data" => "approveRent_" . $site->rent_id
                                     ],
                                     [ "text" => "Отклонить",
-                                        "callback_data" => "declineOrder" . $lead->order_id
+                                        "callback_data" => "declineRent_" . $site->rent_id
                                     ],
                                 ]
                             ]
                         ];
 
                         $this->telegramRepository->sendMessageWithButtonsByTelegramId($chatId, $inlineMessage, $inlineButtons);
+                        $this->telegramRepository->sendMessage($chatId, "------------------------------------\n\n");
                     }
 
                 } else {
@@ -213,14 +264,44 @@ class TelegramService
             }
 
             if ($text == "Заявки на аренду") {
-                $ordersForRent = $this->orderRepository->getOrdersByStatus(Order::ON_RENT_STATUS);
+                $ordersForModeration = $this->orderRepository->getOrdersByStatus(Order::ON_MODERATION_STATUS);
 
-                if (count($ordersForRent)) {
-                    $message = "Список добавленных сайтов:\n\n";
+                if (count($ordersForModeration)) {
+                    $this->telegramRepository->sendMessage($chatId, "Список заявок на аренду:\n\n");
 
-                    foreach ($leads as $number => $lead) {
-                        $message .= $number + 1 . " - " . $lead->site_url . "\n";
+                    foreach ($ordersForModeration as $number => $lead) {
+                        $inlineMessage = $number + 1 . " - " . $lead->site_url . "\n";
+
+                        if (!empty($lead->order_phone)) {
+                            $inlineMessage .= "Номер телефона - " . $lead->order_phone . "\n";
+                        }
+
+                        if (!empty($lead->order_source)) {
+                            $inlineMessage .= "Источник - " . $lead->order_source . "\n";
+                        }
+
+                        if (!empty($lead->order_info)) {
+                            $inlineMessage .= "Дополнительная информация - " . $lead->order_info . "\n";
+                        }
+
+
+                        $inlineButtons = [
+                            "inline_keyboard" => [
+                                [
+                                    [ "text" => "Одобрить",
+                                        "callback_data" => "approveOrder_" . $lead->order_id
+                                    ],
+                                    [ "text" => "Отклонить",
+                                        "callback_data" => "declineOrder_" . $lead->order_id
+                                    ],
+                                ]
+                            ]
+                        ];
+
+                        $this->telegramRepository->sendMessageWithButtonsByTelegramId($chatId, $inlineMessage, $inlineButtons);
+                        $this->telegramRepository->sendMessage($chatId, "------------------------------------\n\n");
                     }
+
                 } else {
                     $message  = "Нет заявок на аренду\n\n";
                 }

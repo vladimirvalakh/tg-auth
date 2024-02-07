@@ -25,4 +25,13 @@ class SiteRepository extends CustomRepository
             ->where('rents.status', '=', Rent::ON_RENT_STATUS)
             ->get();
     }
+
+    public function getSitesByRentStatus(string $status): ?Collection
+    {
+        return DB::table('rents')
+            ->join('sites', 'rents.site_id', '=', 'sites.id')
+            ->select('rents.id as rent_id', 'rents.phone as rent_phone','sites.url as site_url', 'rents.status as rent_status', 'sites.last_month_orders_count as site_last_month_orders_count')
+            ->where('rents.status', '=', $status)
+            ->get();
+    }
 }

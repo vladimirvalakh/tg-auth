@@ -28,6 +28,24 @@ class TelegramRepository extends CustomRepository
         }
     }
 
+    public function sendMessageWithButtonsByTelegramId($chatId, $message, array $buttons) {
+        if (!$chatId) {
+            return;
+        }
+        $telegramBotToken = env('TELEGRAM_BOT_TOKEN');
+
+        $telegramApiUrl = 'https://api.telegram.org/bot';
+
+        $keyboardJson = json_encode($buttons); // перекодируем в json
+        $url = $telegramApiUrl . $telegramBotToken . '/sendMessage?chat_id=' . $chatId . '&text=' . urlencode($message) . '&parse_mode=HTML' . '&reply_markup=' . $keyboardJson;
+
+        try {
+            file_get_contents($url);
+        } catch (\Exception $e){
+            var_dump($e->getMessage());
+        }
+    }
+
 
     public function sendMessageForUserId($userId, $message) {
         $telegramId = $this->userRepository->getUser($userId)->telegram_id;

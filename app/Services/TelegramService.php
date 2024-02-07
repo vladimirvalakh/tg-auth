@@ -7,12 +7,14 @@ namespace App\Services;
 use App\Models\Role;
 use App\Models\Rent;
 use App\Models\Site;
+use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\TelegramRepository;
 use App\Repositories\SiteRepository;
 use App\Repositories\TowRepository;
 use App\Repositories\CategoryRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\LocationRepository;
 use App\Repositories\UserRepository;
 
@@ -21,6 +23,7 @@ class TelegramService
 {
     private TelegramRepository $telegramRepository;
     private UserRepository $userRepository;
+    private OrderRepository $orderRepository;
     private SiteRepository $siteRepository;
     private CategoryRepository $categoryRepository;
     private TowRepository $towRepository;
@@ -30,6 +33,7 @@ class TelegramService
         TelegramRepository $telegramRepository,
         UserRepository $userRepository,
         SiteRepository $siteRepository,
+        OrderRepository $orderRepository,
         CategoryRepository $categoryRepository,
         TowRepository $towRepository,
         LocationRepository $locationRepository,
@@ -37,6 +41,7 @@ class TelegramService
         $this->telegramRepository = $telegramRepository;
         $this->userRepository = $userRepository;
         $this->siteRepository = $siteRepository;
+        $this->orderRepository = $orderRepository;
         $this->categoryRepository = $categoryRepository;
         $this->towRepository = $towRepository;
         $this->locationRepository = $locationRepository;
@@ -50,21 +55,33 @@ class TelegramService
 
         $role = $currentUser->role->slug;
 
-        if ($role == Role::OWNER_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
+//        if ($role == Role::OWNER_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
+//            $buttons = [
+//                "keyboard" =>
+//                    [
+//                        [
+//                            [ "text" => "Добавить сайт"],
+//                            [ "text" => "Статистика"],
+//                        ],
+//                        [
+//                            [ "text" => "Список добавленных сайтов"],
+//                        ],
+//                        [
+//                            [ "text" => "Настройки профиля"],
+//                            [ "text" => "Выплаты"]
+//                        ]
+//                    ]
+//            ];
+//        }
+
+        if ($role == Role::MODERATOR_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
             $buttons = [
                 "keyboard" =>
                     [
                         [
-                            [ "text" => "Добавить сайт"],
-                            [ "text" => "Статистика"],
+                            [ "text" => "Заявки на модерацию"],
+                            [ "text" => "Заявки на аренду"],
                         ],
-                        [
-                            [ "text" => "Список добавленных сайтов"],
-                        ],
-                        [
-                            [ "text" => "Настройки профиля"],
-                            [ "text" => "Выплаты"]
-                        ]
                     ]
             ];
         }
@@ -85,22 +102,7 @@ class TelegramService
 
         $text = $webhook["message"]["text"];
         $chatId = $webhook["message"]["chat"]["id"];
-
-
-//        if (!empty($webhook["message"] && !empty($webhook["message"]["text"]))) {
-//            $text = $webhook["message"]["text"];
-//            $chatId = $webhook["message"]["chat"]["id"];
-//        } elseif (!empty($webhook["text"])) {
-//            $text = $webhook["text"];
-//            $chatId = $webhook["chat"]["id"];
-//        } else {
-//            Log::debug('NotificationService/getTelegramWebhook', [
-//                'webhook' => $webhook,
-//                'error' => 'webhook without text',
-//            ]);
-//
-//            return;
-//        }
+        $buttons = null;
 
         Log::debug('NotificationService/getTelegramWebhook', [
             'text' => $text,
@@ -180,9 +182,54 @@ class TelegramService
                 $message = "Информация по выплатам пока не добавлена с систему \nПопробуйте повторить запрос позже\n";
             }
 
+            if ($text == "Заявки на модерацию") {
+                $ordersForModeration = $this->orderRepository->getOrdersByStatus(Order::ON_MODERATION_STATUS);
+
+                if (count($ordersForModeration)) {
+                    $this->telegramRepository->sendMessage($chatId, "Список заявок на модерацию:\n\n");
+
+                    foreach ($ordersForModeration as $number => $lead) {
+                        $inlineMessage = $number + 1 . " - " . $lead->site_url . "\n";
+
+                        $inlineButtons = [
+                            "inline_keyboard" => [
+                                [
+                                    [ "text" => "Одобрить",
+                                        "callback_data" => "approveOrder" . $lead->order_id
+                                    ],
+                                    [ "text" => "Отклонить",
+                                        "callback_data" => "declineOrder" . $lead->order_id
+                                    ],
+                                ]
+                            ]
+                        ];
+
+                        $this->telegramRepository->sendMessageWithButtonsByTelegramId($chatId, $inlineMessage, $inlineButtons);
+                    }
+
+                } else {
+                    $message  = "Нет заявок на модерацию\n\n";
+                }
+            }
+
+            if ($text == "Заявки на аренду") {
+                $ordersForRent = $this->orderRepository->getOrdersByStatus(Order::ON_RENT_STATUS);
+
+                if (count($ordersForRent)) {
+                    $message = "Список добавленных сайтов:\n\n";
+
+                    foreach ($leads as $number => $lead) {
+                        $message .= $number + 1 . " - " . $lead->site_url . "\n";
+                    }
+                } else {
+                    $message  = "Нет заявок на аренду\n\n";
+                }
+            }
+
             if ($text == "/orders") {
                 $currentUser = $this->userRepository->getUserByTelegramId($chatId);
                 $role = $currentUser->role->name;
+
                 if ($role == Role::ADMINISTRATOR_SLUG) {
                     $message = "Для пользователей с ролью '". $role ."' заявок нет.\n";
                 }
@@ -191,7 +238,11 @@ class TelegramService
             }
 
             if (isset($message) && $message != '') {
-                $this->telegramRepository->sendMessage($chatId, $message);
+                if ($buttons) {
+                    $this->telegramRepository->sendMessageWithButtonsByTelegramId($chatId, $message, $buttons);
+                } else {
+                    $this->telegramRepository->sendMessage($chatId, $message);
+                }
             }
         }
     }

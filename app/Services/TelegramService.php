@@ -56,24 +56,24 @@ class TelegramService
 
         $role = $currentUser->role->slug;
 
-//        if ($role == Role::OWNER_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
-//            $buttons = [
-//                "keyboard" =>
-//                    [
-//                        [
-//                            [ "text" => "Добавить сайт"],
-//                            [ "text" => "Статистика"],
-//                        ],
-//                        [
-//                            [ "text" => "Список добавленных сайтов"],
-//                        ],
-//                        [
-//                            [ "text" => "Настройки профиля"],
-//                            [ "text" => "Выплаты"]
-//                        ]
-//                    ]
-//            ];
-//        }
+        if ($role == Role::OWNER_SLUG) {
+            $buttons = [
+                "keyboard" =>
+                    [
+                        [
+                            [ "text" => "Добавить сайт"],
+                            [ "text" => "Статистика"],
+                        ],
+                        [
+                            [ "text" => "Список добавленных сайтов"],
+                        ],
+                        [
+                            [ "text" => "Настройки профиля"],
+                            [ "text" => "Выплаты"]
+                        ]
+                    ]
+            ];
+        }
 
         if ($role == Role::MODERATOR_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
             $buttons = [
@@ -139,6 +139,20 @@ class TelegramService
                 return;
             }
 
+            //requestUpdateRent_
+            if (str_contains($callbackData, "requestUpdateRent_")) {
+                $data = explode("_", $callbackData);
+                $orderId = $data[1];
+
+                $text = "Опишите, пожалуйста, необходимые доработки по заявке № " . $orderId . " в формате:\n";
+                $text .= "Необходимые доработки по заявке " . $orderId . ": <em>любой текст</em>\n\n";
+                $text .= "Например:\n\n";
+                $text .= "Необходимые доработки по заявке 340: Отсутствует email, необходимо увеличить кол-во заявок в месяц (больше 5)\n\n";
+
+                $this->telegramRepository->sendMessage($chatId, $text);
+                return;
+            }
+
             return;
         }
 
@@ -201,6 +215,35 @@ class TelegramService
                 }
             }
 
+            if (str_contains($text, "Необходимые доработки по заявке ")) {
+                $data = explode(":", $text);
+                $headerInfo = array_shift($data);
+                $textMessage =  trim(implode(":", $data));
+                $rentId  = preg_replace("/[^0-9]/", "", $headerInfo);
+
+                Log::debug('TelegramService/Необходимые доработки по заявке', [
+                    'rentId' => $rentId,
+                    'message' => $textMessage
+                ]);
+
+                $orderId = $this->orderRepository->getOrderIdByRentId($rentId);
+
+                if (!$orderId) {
+                    $this->telegramRepository->sendMessage($chatId, "Не найдена актуальная заявка по брони № " . $rentId);
+                    return;
+                }
+
+                Log::debug('TelegramService/Необходимые доработки по заявке 2', [
+                    'rentId' => $rentId,
+                    'message' => $textMessage,
+                    'orderId' => $orderId
+                ]);
+
+                $this->orderRepository->decline($orderId, "", $textMessage);
+                $this->telegramRepository->sendMessage($chatId, "Заявка № ". $rentId ." отклонена, сообщение о необходимых доработках отправлено");
+                return;
+            }
+
             if ($text == "Список добавленных сайтов") {
 
                 $leads = $this->siteRepository->getAddedSitesOfUserId(Auth::id());
@@ -249,6 +292,11 @@ class TelegramService
                                     ],
                                     [ "text" => "Отклонить",
                                         "callback_data" => "declineRent_" . $site->rent_id
+                                    ],
+                                ],
+                                [
+                                    [ "text" => "Отправить на доработку",
+                                        "callback_data" => "requestUpdateRent_" . $site->rent_id
                                     ],
                                 ]
                             ]

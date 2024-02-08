@@ -46,14 +46,38 @@ class OrderRepository extends CustomRepository
         $rent->save();
     }
 
-    public function decline($orderId) {
+    public function decline($orderId, string $reason = "", string $comment = "") {
         $order = Order::find($orderId);
 
+        $commentText = "";
+
+        if ($reason !== "") {
+            $commentText = $reason;
+        }
+
+        if ($comment !== "" && $reason !== "") {
+            $commentText .= ", ";
+        }
+
+        if ($comment !== "") {
+            $commentText .= $comment;
+        }
+
+        if ($commentText !== "") {
+            $order['comm_moderator'] = $commentText;
+        }
         $order['order_status'] = Order::ORDER_STATUS_DECLINED;
         $order->save();
 
         $rent = Rent::where('site_id', $order['site_id'])->first();
         $rent['status'] = Rent::IN_SEARCH_STATUS;
         $rent->save();
+    }
+
+    public function getOrderIdByRentId($rentId): ?int
+    {
+        $rent = Rent::find($rentId);
+        $order = Order::where('user_id', $rent->user_id)->where('site_id', $rent->site_id)->first();
+        return ($order) ? $order->id : null;
     }
 }

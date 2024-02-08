@@ -46,6 +46,20 @@ class OrderRepository extends CustomRepository
         $rent->save();
     }
 
+    public function approveRent($rentId) {
+        $rent = Rent::find($rentId);
+
+        $rent['status'] = Rent::ON_RENT_STATUS;
+        $rent->save();
+    }
+
+    public function declineRent($rentId) {
+        $rent = Rent::find($rentId);
+
+        $rent['status'] = Rent::IN_SEARCH_STATUS;
+        $rent->save();
+    }
+
     public function decline($orderId, string $reason = "", string $comment = "") {
         $order = Order::find($orderId);
 

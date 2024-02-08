@@ -139,6 +139,24 @@ class TelegramService
                 return;
             }
 
+            //approveRent_
+            if (str_contains($callbackData, "approveRent_")) {
+                $data = explode("_", $callbackData);
+                $rentId = $data[1];
+                $this->orderRepository->approveRent($rentId);
+                $this->telegramRepository->sendMessage($chatId, "Заявка одобрена");
+                return;
+            }
+
+            //declineRent_
+            if (str_contains($callbackData, "declineRent_")) {
+                $data = explode("_", $callbackData);
+                $rentId = $data[1];
+                $this->orderRepository->declineRent($rentId);
+                $this->telegramRepository->sendMessage($chatId, "Заявка отклонена");
+                return;
+            }
+
             //requestUpdateRent_
             if (str_contains($callbackData, "requestUpdateRent_")) {
                 $data = explode("_", $callbackData);

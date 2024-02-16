@@ -6,9 +6,11 @@ use App\Services\NotificationService;
 use App\Services\TelegramService;
 use App\Repositories\UserRepository;
 use App\Repositories\SiteRepository;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\City;
+use App\Models\Rent;
 
 class TestController extends Controller
 {
@@ -33,14 +35,14 @@ class TestController extends Controller
 
 
 
-        $userId = $userRepository->getUserIdByTelegramUsername('vladimir_valakh');
-
-
-
-
-
-
-        $telegramService->sendToTelegramForUserId($userId, $email_message);
+//        $userId = $userRepository->getUserIdByTelegramUsername('vladimir_valakh');
+//
+//
+//
+//
+//
+//
+//        $telegramService->sendToTelegramForUserId($userId, $email_message);
 
 //        $buttons = [
 //            'inline_keyboard' => [
@@ -78,18 +80,17 @@ class TestController extends Controller
 
         //$telegramService->sendToTelegramMessageWithButtonsForUserId(100, $email_message, []);
 
-//        $cities= City::all();
-//
-//        foreach ($cities as $city) {
-//            if ($city->population) {
-//                var_dump($city->population);
-//                $city->population_number = (int)str_replace(" ", '', $city->population);
-//                $city->save();
-//                //var_dump($city->population_number);
-//
-//            }
-//
-//        }
+        $rents= Rent::all();
+
+        foreach ($rents as $rent) {
+            $rent['start_rent_date'] = Carbon::today();
+            $rent['finish_rent_date'] = Carbon::parse('Now +30 days');
+                $rent->save();
+                //var_dump($city->population_number);
+
+
+
+        }
 
 
 

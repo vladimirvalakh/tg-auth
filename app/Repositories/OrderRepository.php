@@ -42,6 +42,8 @@ class OrderRepository extends CustomRepository
         $rent = Rent::where('site_id', $order['site_id'])->first();
         $rent['status'] = Rent::ON_RENT_STATUS;
         $rent['user_id'] = $order['user_id'];
+        $rent['start_rent_date'] = Carbon::today();
+        $rent['finish_rent_date'] = Carbon::parse('Now +30 days');
         $rent['emails'] = $order['emails'];
         $rent->save();
     }

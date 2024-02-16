@@ -8,6 +8,7 @@ use App\Models\Role;
 use App\Models\Rent;
 use App\Models\Site;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\TelegramRepository;
@@ -75,13 +76,28 @@ class TelegramService
             ];
         }
 
-        if ($role == Role::MODERATOR_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
+        if ($role == Role::MODERATOR_SLUG) {
             $buttons = [
                 "keyboard" =>
                     [
                         [
                             [ "text" => "Заявки на модерацию"],
                             [ "text" => "Заявки на аренду"],
+                        ],
+                    ]
+            ];
+        }
+
+        if ($role == Role::MANAGER_SLUG || $role == Role::ADMINISTRATOR_SLUG) {
+            $buttons = [
+                "keyboard" =>
+                    [
+                        [
+                            [ "text" => "Список сайтов для аренды"],
+                        ],
+                        [
+                            [ "text" => "Настройки профиля"],
+                            [ "text" => "Реквизиты"],
                         ],
                     ]
             ];
@@ -277,8 +293,28 @@ class TelegramService
                 }
             }
 
+            if ($text == "Список сайтов для аренды") {
+
+                $leads = $this->siteRepository->getRentSitesForManagerByUserId(Auth::id());
+
+                if (count($leads)) {
+                    $message = "Список сайтов в аренде:\n\n";
+
+                    foreach ($leads as $number => $lead) {
+                        $message .= $number + 1 . " - " . $lead->site_url . "\n";
+                        $message .= 'Дата окончания аренды' . " - " . Carbon::parse($lead->finish_rent_date)->isoformat("D MMMM Y") . "\n\n";
+                    }
+                } else {
+                    $message  = "Нет сайтов в аренде\n\n";
+                }
+            }
+
             if ($text == "Статистика") {
                 $message = "Вывод статистики пока не добавлен с систему \nПопробуйте повторить запрос позже\n";
+            }
+
+            if ($text == "Реквизиты") {
+                $message = "Вывод информации по реквизитам\n";
             }
 
             if ($text == "Выплаты") {

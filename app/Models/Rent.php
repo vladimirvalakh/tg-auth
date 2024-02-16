@@ -26,6 +26,8 @@ class Rent extends Model
     protected $fillable = [
         'site_id',
         'status',
+        'start_rent_date',
+        'finish_rent_date'
     ];
 
     public function sites()

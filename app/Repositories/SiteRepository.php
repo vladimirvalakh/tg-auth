@@ -39,7 +39,7 @@ class SiteRepository extends CustomRepository
     {
         return DB::table('rents')
             ->join('sites', 'rents.site_id', '=', 'sites.id')
-            ->select('rents.id as rent_id', 'rents.finish_rent_date as finish_rent_date', 'sites.url as site_url')
+            ->select('rents.id as rent_id', 'rents.finish_rent_date as finish_rent_date', 'sites.url as site_url', 'rents.user_id as rents_user_id')
             ->where('rents.user_id', '=', $userId)
             ->where('rents.status', '=', Rent::ON_RENT_STATUS)
             ->get();

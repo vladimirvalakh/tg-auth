@@ -193,6 +193,7 @@ class TelegramService
         $text = $webhook["message"]["text"];
         $chatId = $webhook["message"]["chat"]["id"];
         $buttons = null;
+        $currentUser = $this->userRepository->getUserByTelegramId($chatId);
 
         Log::debug('NotificationService/getTelegramWebhook', [
             'text' => $text,
@@ -295,15 +296,18 @@ class TelegramService
 
             if ($text == "Список сайтов для аренды") {
 
-                $leads = $this->siteRepository->getRentSitesForManagerByUserId(Auth::id());
+                $leads = $this->siteRepository->getRentSitesForManagerByUserId($currentUser->id);
 
                 if (count($leads)) {
-                    $message = "Список сайтов в аренде:\n\n";
+                    $inlineMessage = "Список сайтов в аренде:\n\n";
 
                     foreach ($leads as $number => $lead) {
-                        $message .= $number + 1 . " - " . $lead->site_url . "\n";
-                        $message .= 'Дата окончания аренды' . " - " . Carbon::parse($lead->finish_rent_date)->isoformat("D MMMM Y") . "\n\n";
+                        $inlineMessage .= $number + 1 . " - " . $lead->site_url . "\n";
+                        $inlineMessage .= 'Дата окончания аренды' . " - " . Carbon::parse($lead->finish_rent_date)->isoformat("D MMMM Y") . "\n\n";
                     }
+
+                    $this->telegramRepository->sendMessage($chatId, $inlineMessage);
+
                 } else {
                     $message  = "Нет сайтов в аренде\n\n";
                 }

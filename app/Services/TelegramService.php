@@ -318,7 +318,26 @@ class TelegramService
             }
 
             if ($text == "Реквизиты") {
-                $message = "Вывод информации по реквизитам\n";
+                if (!$currentUser->bank_cards) {
+                    $this->telegramRepository->sendMessage($chatId, "Нет информации по банковским реквизитам\n\n");
+                    return;
+                }
+
+                $bankCards = json_decode($currentUser->bank_cards, true);;
+
+                if (count($bankCards)) {
+                    $inlineMessage = "Банковские реквизиты:\n\n";
+
+                    foreach ($bankCards as $number => $value) {
+                        $inlineMessage .= "Банк - " . $value['bank'] . "\n";
+                        $inlineMessage .= 'Номер карты' . " - " . $value['card_number'] . "\n\n";
+                    }
+
+                    $this->telegramRepository->sendMessage($chatId, $inlineMessage);
+
+                } else {
+                    $message  = "Нет информации по реквизитам\n\n";
+                }
             }
 
             if ($text == "Выплаты") {
